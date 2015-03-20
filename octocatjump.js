@@ -1,7 +1,12 @@
 /**
- * Octocat Jump
- * A Github Game Off 2012 Entry
- * @copyright Omer Goshen <gershon@goosemoose.com>
+ * GitHub Game Off 2015
+ * "Business Frog Jumps to Conclusions"
+ * by Casey Leonard <casey@amphibian.com>
+ * 
+ * Forked from:
+ *     Octocat Jump
+ *     A Github Game Off 2012 Entry
+ *     @copyright Omer Goshen <gershon@goosemoose.com>
  */
 (function octocatJump($, Crafty) {
     $(document).ready(function documentReady() {
@@ -258,7 +263,7 @@
                 // if(0 === e.frame % 2)
                 {
                     // Crafty.audio.play('star', 1, 0.5);
-                    this.replace('<div style="text-align: center"><span style="font: 48px Octicons; color:#FF8; text-shadow: 0px 2px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0">&#xF22A</span><span style="color: #222; font: 36px Chewy; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)"><small>X</small> ' + s + ' = ' + (s * 10) + '</span></div>');
+                    this.replace('<div style="text-align: center"><span style="font: 48px Octicons; color:#FF8; text-shadow: 0px 2px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0">STAR</span><span style="color: #222; font: 36px Chewy; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)"><small>X</small> ' + s + ' = ' + (s * 10) + '</span></div>');
 
                     if(++s > stars) {
                         this.unbind("EnterFrame");
@@ -441,7 +446,7 @@
 
             this.disableControls();
 
-            Crafty.e("2D, DOM, Portal, SpriteAnimation").animate("portal", 0, 0, 10).animate("portal", 5, 0).attr({
+            Crafty.e("2D, DOM, Portal, SpriteAnimation").reel("portal", 500, 0, 0, 10).animate("portal", 1).attr({
                 x: this.x - 48,
                 y: this.y - 48,
                 w: 192,
@@ -485,7 +490,7 @@
 
                 octocat.enableControls();
                 // octocat.unbind("EnterFrame", f);
-                Crafty.e("2D, DOM, Portal, SpriteAnimation").animate("portal", 0, 0, 10).animate("portal", 5, 0).attr({
+                Crafty.e("2D, DOM, Portal, SpriteAnimation").reel("portal", 500, 0, 0, 10).animate("portal", 1).attr({
                     x: this.x - 48,
                     y: this.y - 48,
                     w: 192,
@@ -527,7 +532,7 @@
                     y: this.y - 8,
                     w: 64,
                     h: 64
-                }).animate("Smoke", 0, 0, 10).animate('Smoke', 25, 0).bind("AnimationEnd", this.destroy);
+                }).reel("Smoke", 250, 0, 0, 10).animate('Smoke', 1).bind("AnimationEnd", this.destroy);
 
                 var _y = obj.y;
                 obj.tween({
@@ -598,18 +603,18 @@
                 alpha: 0.2
             }).color("#006064");
 
-            var clone = Crafty.e("2D, DOM, OctoClone, Octocat, SpriteAnimation, Tween, Delay").origin('center').attr({
-                x: 160,
-                y: Crafty.canvas._canvas.height / 2 - 48,
-                z: 1,
-                alpha: 0.5
-            }).animate("walk", 0, 0, 3).animate('walk', 5, -1);
+//            var clone = Crafty.e("2D, DOM, OctoClone, Octocat, SpriteAnimation, Tween, Delay").origin('center').attr({
+//                x: 160,
+//                y: Crafty.canvas._canvas.height / 2 - 48,
+//                z: 1,
+//                alpha: 0.5
+//            }).reel("walk", 500, 0, 0, 3).animate('walk', -1);
 
             var octocat = Crafty.e("2D, DOM, Player, Octocat, SpriteAnimation, Physics, PlayerControls, Collision, Tween, Delay").origin('center').setName("octocat").attr({
                 x: 160,
                 y: Crafty.canvas._canvas.height / 2 - 48,
                 z: 999
-            }).animate("walk", 0, 0, 3).animate('walk', 5, -1)
+            }).reel("walk", 500, 0, 0, 3).animate('walk', -1)
             // .gravity()
             // .gravityConst(1)
             // .collision(new Crafty.polygon([16, 80], [80, 80], [80, 16], [16, 16]))
@@ -640,7 +645,7 @@
                     y: octocat.y
                 });
             }
-            clone.bind("EnterFrame", updateClone);
+            //clone.bind("EnterFrame", updateClone);
 
 
             // (function (bg, bgovr, viewport) {
@@ -749,12 +754,12 @@
                                     Crafty.e("Octicons, Pickup, Fork, Tween, Delay").attr({
                                         x: this.x + (this.w - 48) / 2,
                                         y: this.y - 64
-                                    }).css('textShadow', '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #888,1px -1px 0 #888,-1px 1px 0 #888,1px 1px 0 #888').text("&#xF220");
+                                    }).css('textShadow', '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #888,1px -1px 0 #888,-1px 1px 0 #888,1px 1px 0 #888').text("FORK");
                                 } else if(0 === n % 2) {
                                     Crafty.e("Octicons, Pickup, Star, Tween, Delay").attr({
                                         x: this.x + (this.w - 48) / 2,
                                         y: this.y - 64
-                                    }).css('textShadow', '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0').css("color", "#FF8").text("&#xF22A"); // star
+                                    }).css('textShadow', '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0').css("color", "#FF8").text("STAR"); // star
                                 }
                                 this.trigger("Recycled");
                             }
@@ -893,65 +898,42 @@
                     return "assets/sounds/" + x;
                 };
 
-            // Crafty.background("#000");
             Crafty.background("#fff");
-            // Crafty.background("url('assets/images/octocat-spinner-128.gif') no-repeat center center #fff");
-            // Crafty.e("2D, DOM, Color, Tween, Delay").attr({
-            //     x: 0,
-            //     y: 0,
-            //     w: Crafty.viewport.width,
-            //     h: Crafty.viewport.height,
-            //     alpha: 0,
-            //     z: 2
-            // }).color("#fff").tween({
-            //     alpha: 1
-            // }, 50).bind("TweenEnd", function () {
-            //     // var spinner = Crafty.e("2D, DOM, Image, Tween").attr({
-            //     //     x: Crafty.viewport.width / 2 - 64,
-            //     //     y: Crafty.viewport.height / 2 - 64,
-            //     //     z: 3,
-            //     //     alpha: 0
-            //     // }).image('assets/images/octocat-spinner-128.gif').tween({
-            //     //     alpha: 1
-            //     // }, 50);
-            // });
             var images = [];
             images = images.concat("title.png", "cratfy_logo.png", "github_logo.png");
-            images = images.concat("bg.png", "octocat.png", "portal.png", "smoke_jump.png", "speaker.png", "mute.png");
+            images = images.concat("bg.png", "business_frog.png", "portal.png", "smoke_jump.png", "speaker.png", "mute.png");
 
-            Crafty.load(images.map(imgPath), function onLoad() {
+            var audio = {
+                "jump": ["jump.mp3", "jump.ogg", "jump.wav"].map(sndPath),
+                "push": ["push.mp3", "push.ogg", "push.wav"].map(sndPath),
+                "pull": ["pull.mp3", "pull.ogg", "pull.wav"].map(sndPath),
+                "fork": ["fork.mp3", "fork.ogg", "fork.wav"].map(sndPath),
+                "star": ["star.mp3", "star.ogg", "star.wav"].map(sndPath),
+                "dead": ["dead.mp3", "dead.ogg", "dead.wav"].map(sndPath),
+                "click": ["click.mp3", "click.ogg", "click.wav"].map(sndPath)
+            };
+            
+            var assetsObj = {
+            	"audio": audio,
+            	"images": images.map(imgPath) 
+            }
+            
+            Crafty.load(assetsObj, function onLoad() {
                 $("#loader").remove();
 
 
-                // Crafty.sprite(96, R.OCTOCAT_PNG, {
-                Crafty.sprite(96, "assets/images/octocat.png", {
-                // Crafty.sprite(96, "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYAAAABgBAMAAADm2ri6AAAAG1BMVEUo6Ns3NzdAQEBcXFzDV07zu57/yq/i4uL///+iSnSMAAAAAXRSTlMAQObYZgAAAbtJREFUeNrtmtFOgzAUhts9AZ1ZvB34BMorEO+9qPEBtPHWqz2BC48t5VQoY7KSqOdU/z9kY+Nru28ppaEohSAIgiAIgsTRJqTIk4cAL9/R2yqkTCgjjYcAK089rYpC3+TCQ4Bf4Kqu76pJbur61uTCQ0CCQDXLcgOieAjwC2yrMylNLjwEmHlt4qtdfBU8P4WSxkNAiEBpbBTqhUsNyOEhIEPA7Gzbtq5Pt2MfzHIDgngISBDoOtxT2zRNe3Tutd95993uywZE8RCAAAT+hEDghgJHt9yAIB4CjPzGz5DoXqR9dPGVz71Yuhfpib1UHgLcPO2FJZCd9exz09z7927yRFNwqlcmDwF2gdDt9p+LIlSGaFoO2cRnjEgeAtz8+FmbSYqxxl/mw9E0HgLsAidLs3FUwuL+9/PaHN78trZ+CHAJhANRhxv2kx5Fusjr2e+4yBfKXB9SeQiwC3Qobf1QFQoUKqmBBH51/bF2Cg8BboGxh+lUARrmEvmhE6fWf/JPQUC+wPoC42TrR38QBHITmA9byw/LSuMhwMxrMxnvhtdceAiwC8Tjo0o4Y0TyEGAXQBAEQRAE+Tf5AOPSFLJkyU14AAAAAElFTkSuQmCC", {
+                Crafty.sprite(96, "assets/images/business_frog.png", {
                     Octocat: [0, 0]
                 });
 
-                // Crafty.sprite(64, R.SMOKE_JUMP_PNG, {
                 Crafty.sprite(64, "assets/images/smoke_jump.png", {
                     SmokeJump: [0, 0]
                 });
 
                 Crafty.sprite(192, "assets/images/portal.png", {
-                // Crafty.sprite(192, R.PORTAL_PNG, {
                     Portal: [0, 0]
                 });
 
-                Crafty.audio.add({
-                    jump: ["jump.mp3", "jump.ogg", "jump.wav"].map(sndPath),
-                    push: ["push.mp3", "push.ogg", "push.wav"].map(sndPath),
-                    pull: ["pull.mp3", "pull.ogg", "pull.wav"].map(sndPath),
-                    fork: ["fork.mp3", "fork.ogg", "fork.wav"].map(sndPath),
-                    star: ["star.mp3", "star.ogg", "star.wav"].map(sndPath),
-                    dead: ["dead.mp3", "dead.ogg", "dead.wav"].map(sndPath),
-                    click: ["click.mp3", "click.ogg", "click.wav"].map(sndPath)
-                });
-
-                // setTimeout(function () {
-                //     Crafty.scene("intro");
-                // }, 500);
                 Crafty.scene("intro");
             });
         });
