@@ -32,7 +32,7 @@
             var i = 0;
             level_data = [{
                 x: Crafty.viewport.width / 2 - 50,
-                y: Crafty.viewport.height - 50,
+                y: Crafty.viewport.height - 50,  
                 w: 100,
                 h: 20
             }];
@@ -252,7 +252,7 @@
             Crafty.viewport.y = 0;
             var s = 0,
                 total = 0;
-            Crafty.background("url('assets/images/restart.gif') no-repeat center center #fff");
+            Crafty.background("#fff");
 
             function starCounter(e) {
                 // if(0 === e.frame % 2)
