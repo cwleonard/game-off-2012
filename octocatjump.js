@@ -24,7 +24,6 @@
 
         Crafty.init(STAGE_WIDTH, STAGE_HEIGHT);
         Crafty.canvas.init();
-        // Crafty.viewport.init(Crafty.canvas._canvas.width, Crafty.canvas._canvas.height);
         Crafty.viewport.init(STAGE_WIDTH, STAGE_HEIGHT);
         Crafty.settings.modify("autoPause", true);
 
@@ -731,13 +730,13 @@
                                     // this.removeComponent("Pull").addComponent("Pull");
                                     this.addComponent("Pull");
                                 } else if(0 === n % (r + 2)) {
-                                    Crafty.e("Octicons, Pickup, Briefcase, Image, Tween, Delay").attr({
+                                    Crafty.e("Pickup, Briefcase, Image, Tween, Delay").attr({
                                         x: this.x + (this.w - 48) / 2,
                                         y: this.y - 64
                                     })
                                     .image("assets/images/briefcase.png");
                                 } else if(0 === n % 2) {
-                                    Crafty.e("Octicons, Pickup, Burger, Image, Tween, Delay").attr({
+                                    Crafty.e("Pickup, Burger, Image, Tween, Delay").attr({
                                         x: this.x + (this.w - 48) / 2,
                                         y: this.y - 64
                                     })
@@ -754,12 +753,8 @@
             (function (vp) {
                 function updateOctocat(e) {
                     var y = this.y;
-                    // this.animate('walk', 5, - 1);
-                    // Crafty.viewport.scroll('y', Crafty.viewport.height/2 - octocat.y);
-                    // isDead = Crafty.viewport.y + this.y > Crafty.canvas._canvas.height;
                     isDead = this._enabled && (vp.y + y > vp.height);
                     if(isDead) {
-                        // Crafty.scene('dead');
                         Crafty.audio.play('dead', 1, 0.2);
                         Crafty.unbind("EnterFrame", scrollViewport);
                         this.unbind('EnterFrame', updateOctocat);
@@ -784,21 +779,10 @@
                     'borderRadius': '8px',
                     'boxShadow': '0px 8px 8px rgba(0,0,0,.2)'
                 };
-                for(i in level_data.slice(1, 10)) {
+                for(i in level_data.slice(1, 11)) {
                     Crafty.e("2D, DOM, Color, Platform, Collision, Tween, Delay").attr(level_data[i])
-                    // .color("#c2aa48")
                     .color("#888888")
-                    // .collision(new Crafty.polygon([0, 0], [attr.w, 0], [attr.w, attr.h], [0, attr.h]))
                     .collision().css(css);
-
-                    // if (0 === i % (10 + ~~ (Math.random() * 10))) {
-                    //     // var e = Crafty.e("2D, DOM, Color, Pickup, Tween, Delay").attr({x: p.x + (100-24)/2, y: p.y - 24, w:24, h:24}).color("#FF00FF");
-                    //     var e = Crafty.e("2D, DOM, Image, Pickup, Tween, Delay").attr({
-                    //         x: p.x + (100 - 24) / 2,
-                    //         y: p.y - 40
-                    //     }).image('fork.png');
-                    //     p.attach(e);
-                    // }
                 }
             })();
 
