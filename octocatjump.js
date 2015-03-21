@@ -58,12 +58,13 @@
             init: function () {
                 this.requires("2D, DOM, Text");
                 this.css({
-                    "font-family": "Octicons",
-                    "font-size": "48px",
                     "font-weight": "normal",
                     'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
                     // 'textShadow': '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #444,1px -1px 0 #444,-1px 1px 0 #444,1px 1px 0 #444'
                     // 'textShadow': '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0'
+                }).textFont({
+                	"family":"Octicons",
+                	"size":"48px"
                 });
                 // .text("&#xF220");
             }
@@ -72,15 +73,16 @@
         Crafty.c("Push", {
             _label: null,
             init: function () {
-                this.color("#4F4");
+                this.color("#44FF44");
                 this._label = Crafty.e("2D, DOM, Text").attr({
                     x: this.x,
                     y: this.y,
                     w: this.w
-                }).textColor("#ffffff").text("Push").css({
-                    "font": "18px Chewy, Arial",
+                }).textColor("#ffffff").textFont({
+                	"family": "Sniglet",
+                	"size": "18px"
+                }).text("Push").css({
                     "text-align": "center",
-                    // 'textShadow': '0px 1px 2px #000'
                     'textShadow': '0px 1px 2px rgba(0,0,0,.5), -1px -1px 0 #484,1px -1px 0 #484,-1px 1px 0 #484,1px 1px 0 #484'
                 });
                 this.attach(this._label);
@@ -95,7 +97,7 @@
                     if('alpha' !== k) {
                         return;
                     }
-                    this.color("#888");
+                    this.color("#888888");
                     // this.removeComponent("Push", false);
                     this.removeComponent("Push");
                 });
@@ -106,15 +108,16 @@
         Crafty.c("Pull", {
             _label: null,
             init: function () {
-                this.color("#F44");
+                this.color("#FF4444");
                 this._label = Crafty.e("2D, DOM, Text").attr({
                     x: this.x,
                     y: this.y,
                     w: this.w
-                }).textColor("#ffffff").text("Pull").css({
-                    "font": "18px Chewy, Arial",
+                }).textColor("#ffffff").textFont({
+                	"family": "Sniglet",
+                	"size": "18px"
+                }).text("Pull").css({
                     "text-align": "center",
-                    // 'textShadow': '0px 1px 2px #000'
                     'textShadow': '0px 1px 2px rgba(0,0,0,.5), -1px -1px 0 #844,1px -1px 0 #844,-1px 1px 0 #844,1px 1px 0 #844'
                 });
                 this.attach(this._label);
@@ -130,7 +133,7 @@
                     if('alpha' !== k) {
                         return;
                     }
-                    this.color("#888");
+                    this.color("#888888");
                     // this.removeComponent("Pull", false);
                     this.removeComponent("Pull");
                 });
@@ -157,14 +160,6 @@
 
                 this.bind("KeyDown", function (e) {
                     switch(e.keyCode) {
-                        case Crafty.keys.SPACE:
-                            var clone = Crafty("OctoClone");
-                            var p = this.pos();
-                            this.x = clone.x;
-                            this.y = clone.y;
-                            clone.x = p._x;
-                            clone.y = p._y;
-                            break;
                     case Crafty.keys.P:
                         Crafty.pause();
                         break;
@@ -286,15 +281,14 @@
                 y: 20,
                 w: Crafty.viewport.width
             }).css({
-                // "width": Crafty.viewport.width + "px",
-                "font": "48px Chewy, Impact",
                 "line-height": "100%",
                 "color": "#222",
                 "text-align": "center",
                 'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
-            })
-            // .text("Your Score:\n" + score);
-            .bind("EnterFrame", function (e) {
+            }).textFont({
+            	"family": "Sniglet",
+            	"size": "45px"
+            }).bind("EnterFrame", function (e) {
                 this.text("Height = " + s);
 
                 // Crafty.audio.play('click', 1, 0.1);
@@ -330,15 +324,35 @@
             .append('<table id="scoreboard" cellspacing="0">' + $tbl.html() + '</table>');
             console.log([$tbl, $tbl.html()]);
 
-            // // setTimeout(function() {
-            // //     Crafty.scene("main");
-            // // }, 3000);
+            var txt = Crafty.e("2D, DOM, Text, Delay").attr({
+                x: 4,
+                y: Crafty.viewport.height - 40,
+                w: Crafty.viewport.width,
+                alpha: 0
+            }).css({
+                "color": "#888",
+                "text-align": "center"
+            }).textFont({
+            	"family": "Sniglet",
+            	"size": "22px"
+            }).text('Press any key to Restart')
+              .bind("EnterFrame", function (e) {
+                var f = e.frame % 100;
+                this.alpha = ~~ (f < 50);
+            });
+            
+            this.bind("KeyDown", function () {
+            	this.unbind("KeyDown");
+            	initLevel();
+                Crafty.scene("main");
+            });
+            
         });
 
         function onHitStar(e) {
             var entity = e[0].obj,
                 bgovr = Crafty("BackgroundOverlay");
-            // e.removeComponent("Pickup", false);
+
             bgovr.color("#ffff00").delay(function () {
                 this.color("#006064");
             }, 150);
@@ -351,8 +365,8 @@
             if(SFX) Crafty.audio.play('star', 1, 0.5);
 
             entity.removeComponent("Pickup");
-            entity.removeComponent("Star", true);
-            // entity.removeComponent("Star", false);
+            entity.removeComponent("Burger", true);
+
             var t0 = Crafty.frame(),
                 // x0 = entity.x,
                 // y0 = entity.y,
@@ -397,15 +411,6 @@
 
                     this.destroy();
 
-                    // this.tween({
-                    //     // rotation: 0,
-                    //     alpha: 0
-                    // }, 25).bind("TweenEnd", function (k) {
-                    //     if(k === 'alpha') {
-                    //         // $("#stars").animate({zoom: 1.5}, 150).delay(50).animate({zoom: 1}, 150);
-                    //         this.destroy();
-                    //     }
-                    // });
                 }
 
                 v.normalize();
@@ -422,7 +427,7 @@
 
                 var f = e.frame % 8;
                 // this.alpha = ~~ (f < 5);
-                this.alpha = 1 - u(f - 5);
+                this.alpha = 0.5;//1 - u(f - 5);
 
                 this.x += v.x;
                 this.y += v.y;
@@ -435,9 +440,9 @@
                 octocat = Crafty("Player"),
                 bg = Crafty("Background"),
                 bgovr = Crafty("BackgroundOverlay");
-            // e.removeComponent("Pickup", false);
+            
             e.removeComponent("Pickup");
-            e.removeComponent("Fork");
+            e.removeComponent("Briefcase");
             e.destroy();
 
             forks++;
@@ -532,7 +537,7 @@
                     y: this.y - 8,
                     w: 64,
                     h: 64
-                }).reel("Smoke", 250, 0, 0, 10).animate('Smoke', 1).bind("AnimationEnd", this.destroy);
+                }).reel("Smoke", 500, 0, 0, 10).animate('Smoke', 1).bind("AnimationEnd", this.destroy);
 
                 var _y = obj.y;
                 obj.tween({
@@ -579,6 +584,7 @@
             Crafty.viewport.y = 0;
             score = 0;
             stars = 0;
+            n = 10;
             isDead = false;
         }
 
@@ -603,13 +609,6 @@
                 alpha: 0.2
             }).color("#006064");
 
-//            var clone = Crafty.e("2D, DOM, OctoClone, Octocat, SpriteAnimation, Tween, Delay").origin('center').attr({
-//                x: 160,
-//                y: Crafty.canvas._canvas.height / 2 - 48,
-//                z: 1,
-//                alpha: 0.5
-//            }).reel("walk", 500, 0, 0, 3).animate('walk', -1);
-
             var octocat = Crafty.e("2D, DOM, Player, Octocat, SpriteAnimation, Physics, PlayerControls, Collision, Tween, Delay").origin('center').setName("octocat").attr({
                 x: 160,
                 y: Crafty.canvas._canvas.height / 2 - 48,
@@ -619,33 +618,13 @@
             // .gravityConst(1)
             // .collision(new Crafty.polygon([16, 80], [80, 80], [80, 16], [16, 16]))
             // .collision(new Crafty.polygon([0, 96], [96, 96], [96, 0], [0, 0]))
-            .collision(new Crafty.circle(48, 48, 32)).onHit("Star", onHitStar).onHit("Fork", onHitFork).onHit("Platform", onHitPlatform);
+            .collision(new Crafty.circle(48, 48, 32)).onHit("Burger", onHitStar).onHit("Briefcase", onHitFork).onHit("Platform", onHitPlatform);
 
             var ol = [{
                 x: octocat.x,
                 y: octocat.y
             }];
 
-            function updateClone(e) {
-                // var ov = new Crafty.math.Vector2D(octocat.x, octocat.y),
-                //     oc = new Crafty.math.Vector2D(this.x, this.y),
-                //     d = oc.distance(ov);
-                // // console.log(d);
-                // if(e.frame > 100 && d !== 0 && d < 200) {
-                //     // Crafty.scene('dead');
-                // }
-                var p = ol.pop();
-                this.delay(function () {
-                    this.x = p.x;
-                    this.y = p.y;
-                    // }, 750);
-                }, 1000);
-                ol.push({
-                    x: octocat.x,
-                    y: octocat.y
-                });
-            }
-            //clone.bind("EnterFrame", updateClone);
 
 
             // (function (bg, bgovr, viewport) {
@@ -670,24 +649,25 @@
                 Crafty("BackgroundOverlay").alpha = 0.5;
                 Crafty("PauseText").destroy();
                 Crafty.e("2D, DOM, Text, PauseText").css({
-                    "width": Crafty.viewport.width + "px",
-                    "font": "96px Chewy, Impact",
+                	"text-align": "center",
                     "color": "#fff",
-                    "text-align": "center",
                     'textShadow': '0px 2px 8px rgba(0,0,0,.9), -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000'
                 }).attr({
-                    x: 0,
+                	x: 0,
                     y: Crafty.viewport.height / 2 - Crafty.viewport.y - 64,
+                    w: Crafty.viewport.width,
                     z: 9999
+                }).textFont({
+                	"family": "Sniglet",
+                	"size": "96px"
                 }).text("Paused");
-                Crafty.DrawManager.draw();
+                Crafty.trigger("RenderScene");
             });
             Crafty.bind("Unpause", function onUnpause() {
                 // Crafty.audio.unmute();
                 Crafty("BackgroundOverlay").color("#006064");
                 Crafty("BackgroundOverlay").alpha = 0.2;
                 Crafty("PauseText").destroy();
-                Crafty.DrawManager.draw();
             });
 
             (function (vp) {
@@ -721,7 +701,7 @@
                                 this.removeComponent("Push");
                                 this.removeComponent("Pull");
 
-                                this.color("#888");
+                                this.color("#888888");
                                 this.alpha = 1;
                                 this.attr(d);
                                 this.collision();
@@ -751,15 +731,17 @@
                                     // this.removeComponent("Pull").addComponent("Pull");
                                     this.addComponent("Pull");
                                 } else if(0 === n % (r + 2)) {
-                                    Crafty.e("Octicons, Pickup, Fork, Tween, Delay").attr({
+                                    Crafty.e("Octicons, Pickup, Briefcase, Image, Tween, Delay").attr({
                                         x: this.x + (this.w - 48) / 2,
                                         y: this.y - 64
-                                    }).css('textShadow', '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #888,1px -1px 0 #888,-1px 1px 0 #888,1px 1px 0 #888').text("FORK");
+                                    })
+                                    .image("assets/images/briefcase.png");
                                 } else if(0 === n % 2) {
-                                    Crafty.e("Octicons, Pickup, Star, Tween, Delay").attr({
+                                    Crafty.e("Octicons, Pickup, Burger, Image, Tween, Delay").attr({
                                         x: this.x + (this.w - 48) / 2,
                                         y: this.y - 64
-                                    }).css('textShadow', '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0').css("color", "#FF8").text("STAR"); // star
+                                    })
+                                    .image("assets/images/hamburger.png");
                                 }
                                 this.trigger("Recycled");
                             }
@@ -805,7 +787,7 @@
                 for(i in level_data.slice(1, 10)) {
                     Crafty.e("2D, DOM, Color, Platform, Collision, Tween, Delay").attr(level_data[i])
                     // .color("#c2aa48")
-                    .color("#888")
+                    .color("#888888")
                     // .collision(new Crafty.polygon([0, 0], [attr.w, 0], [attr.w, attr.h], [0, attr.h]))
                     .collision().css(css);
 
@@ -835,10 +817,12 @@
                 x: 10,
                 z: 9999
             }).css({
-                "font": "48px Chewy, Impact",
                 "color": "#fff",
                 "text-align": "left",
                 'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
+            }).textFont({
+            	"family": "Sniglet",
+            	"size": "48px"
             }).bind("EnterFrame", updateScore);
 
 
@@ -863,7 +847,7 @@
 
 
             function toggleSFX(e) {
-                if(e.mouseButton !== Crafty.mouseButtons.LEFT) return;
+                //if(e.mouseButton !== Crafty.mouseButtons.LEFT) return;
                 SFX = !SFX;
                 Crafty("SFX").image('assets/images/' + (SFX ? 'speaker.png' : 'mute.png'));
             }
@@ -901,7 +885,7 @@
             Crafty.background("#fff");
             var images = [];
             images = images.concat("title.png", "cratfy_logo.png", "github_logo.png");
-            images = images.concat("bg.png", "business_frog.png", "portal.png", "smoke_jump.png", "speaker.png", "mute.png");
+            images = images.concat("bg.png", "business_frog.png", "portal.png", "briefcase.png", "hamburger.png", "smoke_jump.png", "speaker.png", "mute.png");
 
             var audio = {
                 "jump": ["jump.mp3", "jump.ogg", "jump.wav"].map(sndPath),
@@ -943,13 +927,15 @@
 
             var txt = Crafty.e("2D, DOM, Text, Delay").attr({
                 x: 4,
-                y: Crafty.viewport.height - 16,
+                y: Crafty.viewport.height - 40,
                 w: Crafty.viewport.width,
                 alpha: 0
             }).css({
-                "font": "10px Verdana, Arial",
                 "color": "#888",
                 "text-align": "center"
+            }).textFont({
+            	"family": "Sniglet",
+            	"size": "22px"
             }).text('Press ESC to skip intro');
             txt.bind("EnterFrame", function (e) {
                 var f = e.frame % 100;
