@@ -48,27 +48,6 @@
         }
         initLevel();
 
-
-        /**
-         * Octicons font component
-         * @see https://github.com/styleguide/css/7.0
-         */
-        Crafty.c("Octicons", {
-            init: function () {
-                this.requires("2D, DOM, Text");
-                this.css({
-                    "font-weight": "normal",
-                    'textShadow': '0px 2px 4px rgba(0,0,0,.5)'
-                    // 'textShadow': '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #444,1px -1px 0 #444,-1px 1px 0 #444,1px 1px 0 #444'
-                    // 'textShadow': '0px 0px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0'
-                }).textFont({
-                	"family":"Octicons",
-                	"size":"48px"
-                });
-                // .text("&#xF220");
-            }
-        });
-
         Crafty.c("Push", {
             _label: null,
             init: function () {
@@ -254,23 +233,19 @@
             Crafty.background("#fff");
 
             function starCounter(e) {
-                // if(0 === e.frame % 2)
-                {
-                    // Crafty.audio.play('star', 1, 0.5);
-                    this.replace('<div style="text-align: center"><span style="font: 48px Octicons; color:#FF8; text-shadow: 0px 2px 8px rgba(0,0,0,.5), -1px -1px 0 #fc0,1px -1px 0 #fc0,-1px 1px 0 #fc0,1px 1px 0 #fc0">STAR</span><span style="color: #222; font: 36px Chewy; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)"><small>X</small> ' + s + ' = ' + (s * 10) + '</span></div>');
+            	this.replace('<div style="text-align: center"><img src="assets/images/hamburger.png"/><span style="color: #222; font: 36px Sniglet; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)"><small>&nbsp;X&nbsp;</small>' + s + ' = ' + (s * 10) + '</span></div>');
 
-                    if(++s > stars) {
-                        this.unbind("EnterFrame");
+            	if(++s > stars) {
+            		this.unbind("EnterFrame");
 
-                        total = (s - 1) * 10 + score;
-                        Crafty.e("2D, DOM, HTML").attr({
-                            x: 0,
-                            y: 144,
-                            w: Crafty.viewport.width
-                        }).replace('<div style="text-align: center; font: 48px Chewy, Impact; color: #222; text-shadow: 0px 2px 4px rgba(0,0,0,.5);">Total = ' + total + '</div>');
-                        return;
-                    }
-                }
+            		total = (s - 1) * 10 + score;
+            		Crafty.e("2D, DOM, HTML").attr({
+            			x: 0,
+            			y: 144,
+            			w: Crafty.viewport.width
+            		}).replace('<div style="text-align: center; font: 48px Sniglet, Impact; color: #222; text-shadow: 0px 2px 4px rgba(0,0,0,.5);">Total = ' + total + '</div>');
+            		return;
+            	}
             }
 
             Crafty.e("2D, DOM, Text, Score")
@@ -297,7 +272,7 @@
                     setTimeout(function () {
                         Crafty.e("2D, DOM, HTML").attr({
                             x: 0,
-                            y: 64,
+                            y: 84,
                             w: Crafty.viewport.width
                         }).bind("EnterFrame", starCounter);
                     }, 250);
@@ -392,7 +367,7 @@
                 if(d <= 10) {
                     this.unbind("EnterFrame");
                     stars++;
-                    Crafty("Stars").replace('<div id="stars" style="position: relative; top: 0px;"><span id="star" style="font: 48px Octicons; color:#FF8; text-shadow: 0px 2px 8px #fc0, -1px -1px 0 #fc0,1px -1px 0 rgba(0,0,0,0.2),-1px 1px 0 rgba(0,0,0,0.2),1px 1px 0 rgba(0,0,0,0.2);">&#xF22A</span><span style="font: 36px Chewy; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)"><small>X</small> ' + stars + '</span></div>');
+                    Crafty("Stars").replace('<div id="stars" style="position: relative; top: 0px;"><img src="assets/images/hamburger.png"/><span style="font: 36px Sniglet; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)">&nbsp;x&nbsp;' + stars + '</span></div>');
                     $("#stars").animate({
                         'top': '+=10px',
                         'zoom': 1.02
@@ -501,17 +476,6 @@
                     h: 192
                 }).bind("AnimationEnd", function () {
                     this.destroy();
-                    // Crafty.e("2D, DOM, Text, PauseText").css({
-                    //     // "width": Crafty.viewport.width + "px",
-                    //     "font": "64px Chewy",
-                    //     "color": "#fff",
-                    //     "text-align": "center",
-                    //     'textShadow': '0px 2px 8px rgba(0,0,0,.9), -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000'
-                    // }).attr({
-                    //     x: Math.max(0, Math.min(Crafty.viewport.x, this.x)),
-                    //     y: this.y,
-                    //     z: 9999
-                    // }).text("Forked");
                 });
 
             }, 1000);
@@ -695,8 +659,6 @@
                                     this._children = [];
                                 }
 
-                                // if(this._label)
-                                // this._label.destroy();
                                 this.removeComponent("Push");
                                 this.removeComponent("Pull");
 
@@ -705,38 +667,19 @@
                                 this.attr(d);
                                 this.collision();
 
-
-                                // this.attr(d);
-                                // this.alpha = 1;
-                                // this.bind("TweenEnd", function (k) {
-                                //     if('y' === k) {
-                                //         this.attr(d);
-                                //         this.unbind("TweenEnd");
-                                //     }
-                                //     if('alpha' === k) {
-                                //         this.attr(d);
-                                //     }
-                                //     // this.alpha = 1;
-                                //     // this.collision();
-                                //     // this.unbind("TweenEnd");
-                                // });
                                 var r = ~~ (10 * (1 + Math.random()));
                                 if(0 === n % r) {
-                                    // this.removeComponent("Push", false).addComponent("Push");
-                                    // this.removeComponent("Push").addComponent("Push");
                                     this.addComponent("Push");
                                 } else if(!this.has("Push") && 0 === n % (r + 1)) {
-                                    // this.removeComponent("Pull", false).addComponent("Pull");
-                                    // this.removeComponent("Pull").addComponent("Pull");
                                     this.addComponent("Pull");
                                 } else if(0 === n % (r + 2)) {
-                                    Crafty.e("Pickup, Briefcase, Image, Tween, Delay").attr({
+                                    Crafty.e("2D, DOM, Pickup, Briefcase, Image, Tween, Delay").attr({
                                         x: this.x + (this.w - 48) / 2,
                                         y: this.y - 64
                                     })
                                     .image("assets/images/briefcase.png");
                                 } else if(0 === n % 2) {
-                                    Crafty.e("Pickup, Burger, Image, Tween, Delay").attr({
+                                    Crafty.e("2D, DOM, Pickup, Burger, Image, Tween, Delay").attr({
                                         x: this.x + (this.w - 48) / 2,
                                         y: this.y - 64
                                     })
@@ -814,12 +757,8 @@
                 var _stars = -1;
 
                 function updateStars(e) {
-                    // if (_stars != stars) {
-                    //     this.replace('<div id="stars" style="position: relative; top: 0px; transition: all 4s"><span id="star" style="font: 48px Octicons; color:#FF8; text-shadow: 0px 2px 8px rgba(0,0,0,.5), -1px -1px 0 rgba(0,0,0,0.2),1px -1px 0 rgba(0,0,0,0.2),-1px 1px 0 rgba(0,0,0,0.2),1px 1px 0 rgba(0,0,0,0.2);">&#xF22A</span><span style="font: 36px Chewy; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)"><small>X</small> ' + stars + '</span></div>');
-                    //     _stars = stars;
-                    // }
                     this.x = Crafty.viewport.width / 2 - 48;
-                    this.y = -Crafty.viewport.y - 16;
+                    this.y = -Crafty.viewport.y;
                 }
                 Crafty.e("HTML, Stars, Tween, Delay").attr({
                     x: this.x + 34,
@@ -831,7 +770,7 @@
 
 
             function toggleSFX(e) {
-                //if(e.mouseButton !== Crafty.mouseButtons.LEFT) return;
+                if(e.mouseButton !== Crafty.mouseButtons.LEFT) return;
                 SFX = !SFX;
                 Crafty("SFX").image('assets/images/' + (SFX ? 'speaker.png' : 'mute.png'));
             }
