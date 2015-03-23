@@ -322,6 +322,39 @@
             });
             
         });
+        
+        function onHitCake(e) {
+            var entity = e[0].obj,
+                bgovr = Crafty("BackgroundOverlay");
+
+            bgovr.color("#ffff00").delay(function () {
+                this.color("#006064");
+            }, 150);
+
+            entity._origin.x = 24;
+            entity._origin.y = 42;
+            entity.z = 999;
+
+
+            if(SFX) Crafty.audio.play('star', 1, 0.5);
+
+            entity.removeComponent("Pickup");
+            entity.removeComponent("Cake", true);
+            entity.destroy();
+
+            
+            
+            Crafty("Platform").each(function (i) {
+                var p = this;
+
+                this.attr({
+                	"w": 125
+                });
+            });
+            
+
+        }
+
 
         function onHitStar(e) {
             var entity = e[0].obj,
@@ -581,7 +614,7 @@
             // .gravityConst(1)
             // .collision(new Crafty.polygon([16, 80], [80, 80], [80, 16], [16, 16]))
             // .collision(new Crafty.polygon([0, 96], [96, 96], [96, 0], [0, 0]))
-            .collision(new Crafty.circle(48, 48, 32)).onHit("Burger", onHitStar).onHit("Briefcase", onHitFork).onHit("Platform", onHitPlatform);
+            .collision(new Crafty.circle(48, 48, 32)).onHit("Burger", onHitStar).onHit("Cake", onHitCake).onHit("Briefcase", onHitFork).onHit("Platform", onHitPlatform);
 
             var ol = [{
                 x: octocat.x,
@@ -624,7 +657,8 @@
                 	"family": "Sniglet",
                 	"size": "96px"
                 }).text("Paused");
-                Crafty.trigger("RenderScene");
+                //Crafty.trigger("RenderScene");
+                Crafty.DrawManager.draw();
             });
             Crafty.bind("Unpause", function onUnpause() {
                 // Crafty.audio.unmute();
@@ -648,6 +682,7 @@
                             if(vp.y + this.y > vp.height) {
                                 // this.y = -Crafty.viewport.y - this.y - i * 100 * (++j);
                                 var d = level_data[n++];
+                                
                                 this.unbind("TweenEnd");
 
                                 if(this._children) {
@@ -684,6 +719,12 @@
                                         y: this.y - 64
                                     })
                                     .image("assets/images/hamburger.png");
+                                } else if(0 === n % 9) {
+                                    Crafty.e("2D, DOM, Pickup, Cake, Image, Tween, Delay").attr({
+                                        x: this.x + (this.w - 48) / 2,
+                                        y: this.y - 64
+                                    })
+                                    .image("assets/images/cake.png");
                                 }
                                 this.trigger("Recycled");
                             }
@@ -808,7 +849,8 @@
             Crafty.background("#fff");
             var images = [];
             images = images.concat("title.png", "cratfy_logo.png", "github_logo.png");
-            images = images.concat("bg.png", "business_frog.png", "portal.png", "briefcase.png", "hamburger.png", "smoke_jump.png", "speaker.png", "mute.png");
+            images = images.concat("bg.png", "business_frog.png", "portal.png", "cake.png", 
+            		"briefcase.png", "hamburger.png", "smoke_jump.png", "speaker.png", "mute.png");
 
             var audio = {
                 "jump": ["jump.mp3", "jump.ogg", "jump.wav"].map(sndPath),
