@@ -657,8 +657,7 @@
                 	"family": "Sniglet",
                 	"size": "96px"
                 }).text("Paused");
-                //Crafty.trigger("RenderScene");
-                Crafty.DrawManager.draw();
+                Crafty.trigger("RenderScene");
             });
             Crafty.bind("Unpause", function onUnpause() {
                 // Crafty.audio.unmute();
