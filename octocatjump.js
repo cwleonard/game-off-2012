@@ -10,6 +10,12 @@
  */
 (function octocatJump($, Crafty) {
     $(document).ready(function documentReady() {
+    	
+    	var TASK_COLOR = "#3399FF";
+    	var CP_TASK_COLOR = "#FF0000";
+    	var BG_COLOR = "#FFFFFF";
+    	var OVERLAY_ALPHA = 0.3;
+    	
         var STAGE_WIDTH = 400,
             STAGE_HEIGHT = 640,
             SCROLL_SPEED = 1,
@@ -48,6 +54,26 @@
         }
         initLevel();
 
+        Crafty.c("Critical", {
+            _label: null,
+            init: function () {
+                this.color(CP_TASK_COLOR);
+            },
+
+            use: function () {
+                this.tween({
+                    alpha: 0
+                }, 25).bind("TweenEnd", function (k) {
+                    if('alpha' !== k) {
+                        return;
+                    }
+                    this.color("#888888");
+                    this.removeComponent("Critical");
+                });
+                return this;
+            }
+        });
+        
         Crafty.c("Push", {
             _label: null,
             init: function () {
@@ -82,7 +108,7 @@
                 return this;
             }
         });
-
+        
         Crafty.c("Pull", {
             _label: null,
             init: function () {
@@ -296,7 +322,7 @@
                 // 'boxShadow': '0px 8px 8px rgba(0,0,0,.2)'
             })
             .append('<table id="scoreboard" cellspacing="0">' + $tbl.html() + '</table>');
-            console.log([$tbl, $tbl.html()]);
+            //console.log([$tbl, $tbl.html()]);
 
             var txt = Crafty.e("2D, DOM, Text, Delay").attr({
                 x: 4,
@@ -328,7 +354,7 @@
                 bgovr = Crafty("BackgroundOverlay");
 
             bgovr.color("#ffff00").delay(function () {
-                this.color("#006064");
+                this.color(BG_COLOR);
             }, 150);
 
             entity._origin.x = 24;
@@ -346,9 +372,11 @@
             
             Crafty("Platform").each(function (i) {
                 var p = this;
-
-                this.attr({
-                	"w": 125
+                var width = 125;
+                var nx = p._x - ((width - p._w)/2);
+                p.attr({
+                	"w": width,
+                	"x": nx
                 });
             });
             
@@ -361,7 +389,7 @@
                 bgovr = Crafty("BackgroundOverlay");
 
             bgovr.color("#ffff00").delay(function () {
-                this.color("#006064");
+                this.color(BG_COLOR);
             }, 150);
 
             entity._origin.x = 24;
@@ -472,7 +500,7 @@
             }
 
             function revertBg() {
-                bgovr.color("#006064");
+                bgovr.color(BG_COLOR);
             }
 
             function blinkRepeatedly() {
@@ -549,7 +577,7 @@
                     // this.stopFalling();
                     this.y += c.overlap * -c.normal.y;
 
-                    this._speed.y = obj.has("Push") ? -this.PUSH_HEIGHT : -this.JUMP_HEIGHT;
+                    this._speed.y = obj.has("Critical") ? -this.PUSH_HEIGHT : -this.JUMP_HEIGHT;
 
                     if(c.obj.has("Pull")) {
                         if(obj.use) obj.use();
@@ -559,15 +587,15 @@
                         if(SFX) Crafty.audio.play("pull", 1, 0.2);
 
                         bgovr.color("#ff0000").delay(function () {
-                            this.color("#006064");
+                            this.color(BG_COLOR);
                         }, 250);
-                    } else if(c.obj.has("Push")) {
+                    } else if(c.obj.has("Critical")) {
                         if(obj.use) obj.use();
 
                         if(SFX) Crafty.audio.play("push", 1, 0.2);
 
                         bgovr.color("#00ff00").delay(function () {
-                            this.color("#006064");
+                            this.color(BG_COLOR);
                         }, 250);
                     } else if(SFX) Crafty.audio.play("jump", 1, 0.1);
 
@@ -587,14 +615,24 @@
         Crafty.scene("main", function mainScene() {
             initState();
 
+            //Crafty.background("#FFFFFF url(assets/images/gantt_bg.png)");
+            Crafty.background("#FFFFFF");
+            
             var bg = Crafty.e("2D, Canvas, Image, Background").attr({
                 x: 0,
                 y: 0,
                 z: -4,
-                w: Crafty.viewport.width,
-            h: Crafty.viewport.height
-            }).image("assets/images/bg.png", "repeat");
-            // }).image(R.BG_PNG, "repeat");
+                w: 490,
+                h: Crafty.viewport.height
+            }).image("assets/images/gantt_bg.png");
+            
+            var bg2 = Crafty.e("2D, Canvas, Image").attr({
+                x: 490,
+                y: 0,
+                z: -3,
+                w: 490,
+                h: Crafty.viewport.height
+            }).image("assets/images/gantt_bg.png");
 
             var bgovr = Crafty.e("2D, DOM, BackgroundOverlay, Color, Delay").attr({
                 x: 0,
@@ -602,8 +640,8 @@
                 z: -1,
                 w: Crafty.viewport.width,
                 h: Crafty.viewport.height,
-                alpha: 0.2
-            }).color("#006064");
+                alpha: OVERLAY_ALPHA
+            }).color(BG_COLOR);
 
             var octocat = Crafty.e("2D, DOM, Player, Octocat, SpriteAnimation, Physics, PlayerControls, Collision, Tween, Delay").origin('center').setName("octocat").attr({
                 x: 160,
@@ -621,24 +659,24 @@
                 y: octocat.y
             }];
 
-
-
-            // (function (bg, bgovr, viewport) {
-
             function scrollViewport(e) {
-                // if(isDead) {
-                //     Crafty.unbind("EnterFrame", scrollViewport);
-                //     return;
-                // }
-                Crafty.viewport.y += SCROLL_SPEED;
-                // Crafty("Background").y -= ~~(.5 * SCROLL_SPEED / dt);
+
+            	Crafty.viewport.y += SCROLL_SPEED;
                 bg.y = -Crafty.viewport.y;
+                bg2.y = -Crafty.viewport.y;
+                bg.x = bg._x - SCROLL_SPEED;
+                bg2.x = bg2._x - SCROLL_SPEED;
+                if (bg._x <= -490) {
+                	bg.x = 490;
+                }
+                if (bg2._x <= -490) {
+                	bg2.x = 490;
+                }
                 bgovr.y = -Crafty.viewport.y;
 
-                // Crafty("Background").y -= (.5 * SCROLL_SPEED / dt);
             }
             Crafty.bind("EnterFrame", scrollViewport);
-            // })(bg, bgovr, Crafty.viewport);
+
             Crafty.bind("Pause", function onPause() {
                 // Crafty.audio.mute();
                 Crafty("BackgroundOverlay").color("#000000");
@@ -661,7 +699,7 @@
             });
             Crafty.bind("Unpause", function onUnpause() {
                 // Crafty.audio.unmute();
-                Crafty("BackgroundOverlay").color("#006064");
+                Crafty("BackgroundOverlay").color(BG_COLOR);
                 Crafty("BackgroundOverlay").alpha = 0.2;
                 Crafty("PauseText").destroy();
             });
@@ -693,18 +731,19 @@
                                     this._children = [];
                                 }
 
+                                this.removeComponent("Critical");
                                 this.removeComponent("Push");
                                 this.removeComponent("Pull");
 
-                                this.color("#888888");
+                                this.color(TASK_COLOR);
                                 this.alpha = 1;
                                 this.attr(d);
                                 this.collision();
 
                                 var r = ~~ (10 * (1 + Math.random()));
                                 if(0 === n % r) {
-                                    this.addComponent("Push");
-                                } else if(!this.has("Push") && 0 === n % (r + 1)) {
+                                    this.addComponent("Critical");
+                                } else if(!this.has("Critical") && 0 === n % (r + 1)) {
                                     this.addComponent("Pull");
                                 } else if(0 === n % (r + 2)) {
                                     Crafty.e("2D, DOM, Pickup, Briefcase, Image, Tween, Delay").attr({
@@ -764,7 +803,7 @@
                 };
                 for(i in level_data.slice(1, 11)) {
                     Crafty.e("2D, DOM, Color, Platform, Collision, Tween, Delay").attr(level_data[i])
-                    .color("#888888")
+                    .color(TASK_COLOR)
                     .collision().css(css);
                 }
             })();
@@ -848,7 +887,7 @@
             Crafty.background("#fff");
             var images = [];
             images = images.concat("title.png", "cratfy_logo.png", "github_logo.png");
-            images = images.concat("bg.png", "business_frog.png", "portal.png", "cake.png", 
+            images = images.concat("gantt_bg.png", "business_frog.png", "portal.png", "cake.png", 
             		"briefcase.png", "hamburger.png", "smoke_jump.png", "speaker.png", "mute.png");
 
             var audio = {
