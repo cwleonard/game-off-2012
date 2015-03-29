@@ -13,8 +13,11 @@
     	
     	var TASK_COLOR = "#3399FF";
     	var CP_TASK_COLOR = "#FF0000";
+    	var MAJOR_TASK_COLOR = "#000000";
     	var BG_COLOR = "#FFFFFF";
     	var OVERLAY_ALPHA = 0.3;
+    	var PLATFORM_HEIGHT = 20;
+    	var MAJOR_PLATFORM_HEIGHT = 10;
     	
         var STAGE_WIDTH = 400,
             STAGE_HEIGHT = 640,
@@ -39,7 +42,7 @@
                 x: Crafty.viewport.width / 2 - 50,
                 y: Crafty.viewport.height - 50,  
                 w: 100,
-                h: 20
+                h: PLATFORM_HEIGHT
             }];
 
             for(i = 0; i < 10000; i++) {
@@ -47,12 +50,51 @@
                     x: ~~ (Math.random() * (Crafty.viewport.width - 100)),
                     y: -Crafty.viewport.y + Crafty.viewport.height - i * 100,
                     w: 50 + 50 * Math.random(),
-                    h: 20,
+                    h: PLATFORM_HEIGHT,
                     num: i
                 });
             }
         }
         initLevel();
+
+        Crafty.c("Apple", {
+            init: function () {
+            	this._dir = (Math.random() < 0.5 ? -1 : 1);
+            	this.x = ( this._dir > 0 ? -(this._w) : (Crafty.viewport.width + (this._w)));
+            	this.y = (Crafty.viewport.height / 4) - (Crafty.viewport.y);
+            	this.z = 9999;
+            	this.bind("EnterFrame", this._enterframe);
+            },
+
+            _enterframe: function () {
+            	this.x = this._x + (this._dir * 4.5);
+            	if (this._x < -(this._w*2) || this._x > Crafty.viewport.width + (this._w*2)) {
+            		this.destroy();
+            	}
+            }
+        });
+
+        Crafty.c("Major", {
+            _label: null,
+            init: function () {
+                this.color(MAJOR_TASK_COLOR);
+                this.h = MAJOR_PLATFORM_HEIGHT;
+            },
+
+            use: function () {
+                this.tween({
+                    alpha: 0
+                }, 25).bind("TweenEnd", function (k) {
+                    if('alpha' !== k) {
+                        return;
+                    }
+                    this.color("#888888");
+                    this.removeComponent("Major");
+                    this.h = PLATFORM_HEIGHT;
+                });
+                return this;
+            }
+        });
 
         Crafty.c("Critical", {
             _label: null,
@@ -73,42 +115,7 @@
                 return this;
             }
         });
-        
-        Crafty.c("Push", {
-            _label: null,
-            init: function () {
-                this.color("#44FF44");
-                this._label = Crafty.e("2D, DOM, Text").attr({
-                    x: this.x,
-                    y: this.y,
-                    w: this.w
-                }).textColor("#ffffff").textFont({
-                	"family": "Sniglet",
-                	"size": "18px"
-                }).text("Push").css({
-                    "text-align": "center",
-                    'textShadow': '0px 1px 2px rgba(0,0,0,.5), -1px -1px 0 #484,1px -1px 0 #484,-1px 1px 0 #484,1px 1px 0 #484'
-                });
-                this.attach(this._label);
-            },
 
-            use: function () {
-                // this.removeComponent("Push", false);
-                this._label.destroy();
-                this.tween({
-                    alpha: 0
-                }, 25).bind("TweenEnd", function (k) {
-                    if('alpha' !== k) {
-                        return;
-                    }
-                    this.color("#888888");
-                    // this.removeComponent("Push", false);
-                    this.removeComponent("Push");
-                });
-                return this;
-            }
-        });
-        
         Crafty.c("Pull", {
             _label: null,
             init: function () {
@@ -128,8 +135,8 @@
             },
 
             use: function () {
-                // this.removeComponent("Pull", false);
-                this._label.destroy();
+
+            	this._label.destroy();
 
                 this.tween({
                     alpha: 0
@@ -138,7 +145,6 @@
                         return;
                     }
                     this.color("#888888");
-                    // this.removeComponent("Pull", false);
                     this.removeComponent("Pull");
                 });
                 return this;
@@ -324,28 +330,33 @@
             .append('<table id="scoreboard" cellspacing="0">' + $tbl.html() + '</table>');
             //console.log([$tbl, $tbl.html()]);
 
-            var txt = Crafty.e("2D, DOM, Text, Delay").attr({
-                x: 4,
-                y: Crafty.viewport.height - 40,
-                w: Crafty.viewport.width,
-                alpha: 0
-            }).css({
-                "color": "#888",
-                "text-align": "center"
-            }).textFont({
-            	"family": "Sniglet",
-            	"size": "22px"
-            }).text('Press any key to Restart')
-              .bind("EnterFrame", function (e) {
-                var f = e.frame % 100;
-                this.alpha = ~~ (f < 50);
-            });
-            
-            this.bind("KeyDown", function () {
-            	this.unbind("KeyDown");
-            	initLevel();
-                Crafty.scene("main");
-            });
+            var _scene = this;
+            setTimeout(function () {
+
+                var txt = Crafty.e("2D, DOM, Text, Delay").attr({
+                    x: 4,
+                    y: Crafty.viewport.height - 40,
+                    w: Crafty.viewport.width,
+                    alpha: 0
+                }).css({
+                    "color": "#888",
+                    "text-align": "center"
+                }).textFont({
+                	"family": "Sniglet",
+                	"size": "22px"
+                }).text('Press any key to Restart')
+                  .bind("EnterFrame", function (e) {
+                    var f = e.frame % 100;
+                    this.alpha = ~~ (f < 50);
+                });
+            	
+            	_scene.bind("KeyDown", function () {
+            		this.unbind("KeyDown");
+            		initLevel();
+            		Crafty.scene("main");
+            	});
+            	
+            }, 500);
             
         });
         
@@ -367,8 +378,6 @@
             entity.removeComponent("Pickup");
             entity.removeComponent("Cake", true);
             entity.destroy();
-
-            
             
             Crafty("Platform").each(function (i) {
                 var p = this;
@@ -577,19 +586,16 @@
                     // this.stopFalling();
                     this.y += c.overlap * -c.normal.y;
 
-                    this._speed.y = obj.has("Critical") ? -this.PUSH_HEIGHT : -this.JUMP_HEIGHT;
+                    this._speed.y = obj.has("Major") ? -this.PUSH_HEIGHT : -this.JUMP_HEIGHT;
 
-                    if(c.obj.has("Pull")) {
+                    if(c.obj.has("Critical")) {
                         if(obj.use) obj.use();
-                        // c.obj.bind("TweenEnd", function(){
-                        //     c.obj.use();
-                        // });
                         if(SFX) Crafty.audio.play("pull", 1, 0.2);
 
                         bgovr.color("#ff0000").delay(function () {
                             this.color(BG_COLOR);
                         }, 250);
-                    } else if(c.obj.has("Critical")) {
+                    } else if(c.obj.has("Major")) {
                         if(obj.use) obj.use();
 
                         if(SFX) Crafty.audio.play("push", 1, 0.2);
@@ -602,6 +608,35 @@
                 }
             }
         }
+        
+        function onHitApple(e) {
+        	
+            var c = e[0],
+                obj = c.obj,
+                octocat = Crafty("Player"),
+                bgovr = Crafty("BackgroundOverlay");
+
+            var _ox = octocat._x;
+            var _ax = obj._x;
+            var _ay = obj._y;
+            
+            octocat.tween({
+            	x: _ox + (150 * obj._dir)
+            }, 500);
+
+            obj.tween({
+            	x: _ox - (250 * obj._dir),
+            	y: _ay + 250
+            }, 500).bind("TweenEnd", function (k) {
+            	obj.destroy();
+            }, 5);
+            
+            bgovr.color("#ff000").delay(function () {
+                this.color(BG_COLOR);
+            }, 250);
+
+        	
+        }
 
         function initState() {
             Crafty.background("none");
@@ -613,9 +648,9 @@
         }
 
         Crafty.scene("main", function mainScene() {
-            initState();
 
-            //Crafty.background("#FFFFFF url(assets/images/gantt_bg.png)");
+        	initState();
+
             Crafty.background("#FFFFFF");
             
             var bg = Crafty.e("2D, Canvas, Image, Background").attr({
@@ -634,7 +669,7 @@
                 h: Crafty.viewport.height
             }).image("assets/images/gantt_bg.png");
 
-            var bgovr = Crafty.e("2D, DOM, BackgroundOverlay, Color, Delay").attr({
+            var bgovr = Crafty.e("2D, Canvas, BackgroundOverlay, Color, Delay").attr({
                 x: 0,
                 y: 0,
                 z: -1,
@@ -648,17 +683,15 @@
                 y: Crafty.canvas._canvas.height / 2 - 48,
                 z: 999
             }).reel("walk", 500, 0, 0, 3).animate('walk', -1)
-            // .gravity()
-            // .gravityConst(1)
-            // .collision(new Crafty.polygon([16, 80], [80, 80], [80, 16], [16, 16]))
-            // .collision(new Crafty.polygon([0, 96], [96, 96], [96, 0], [0, 0]))
-            .collision(new Crafty.circle(48, 48, 32)).onHit("Burger", onHitStar).onHit("Cake", onHitCake).onHit("Briefcase", onHitFork).onHit("Platform", onHitPlatform);
+            .collision(new Crafty.circle(48, 48, 32))
+            .onHit("Burger", onHitStar)
+            .onHit("Cake", onHitCake)
+            .onHit("Apple", onHitApple)
+            .onHit("Briefcase", onHitFork)
+            .onHit("Platform", onHitPlatform);
 
-            var ol = [{
-                x: octocat.x,
-                y: octocat.y
-            }];
 
+            
             function scrollViewport(e) {
 
             	Crafty.viewport.y += SCROLL_SPEED;
@@ -676,6 +709,17 @@
 
             }
             Crafty.bind("EnterFrame", scrollViewport);
+            
+            
+            function throwApples(e) {
+            	
+            	if (n > 50 && (Math.random() < 0.01)) {
+            		Crafty.e("2D, DOM, Image, Tween, Apple")
+            			.image("assets/images/apple.png");
+            	}
+
+            }
+            Crafty.bind("EnterFrame", throwApples)
 
             Crafty.bind("Pause", function onPause() {
                 // Crafty.audio.mute();
@@ -732,6 +776,7 @@
                                 }
 
                                 this.removeComponent("Critical");
+                                this.removeComponent("Major");
                                 this.removeComponent("Push");
                                 this.removeComponent("Pull");
 
@@ -744,23 +789,23 @@
                                 if(0 === n % r) {
                                     this.addComponent("Critical");
                                 } else if(!this.has("Critical") && 0 === n % (r + 1)) {
-                                    this.addComponent("Pull");
+                                    this.addComponent("Major");
                                 } else if(0 === n % (r + 2)) {
-                                    Crafty.e("2D, DOM, Pickup, Briefcase, Image, Tween, Delay").attr({
-                                        x: this.x + (this.w - 48) / 2,
-                                        y: this.y - 64
+                                    Crafty.e("2D, Canvas, Pickup, Briefcase, Image, Tween, Delay").attr({
+                                        x: this._x + (this._w - 48) / 2,
+                                        y: this._y - 64
                                     })
                                     .image("assets/images/briefcase.png");
                                 } else if(0 === n % 2) {
-                                    Crafty.e("2D, DOM, Pickup, Burger, Image, Tween, Delay").attr({
-                                        x: this.x + (this.w - 48) / 2,
-                                        y: this.y - 64
+                                    Crafty.e("2D, Canvas, Pickup, Burger, Image, Tween, Delay").attr({
+                                        x: this._x + (this._w - 48) / 2,
+                                        y: this._y - 64
                                     })
                                     .image("assets/images/hamburger.png");
                                 } else if(0 === n % 9) {
-                                    Crafty.e("2D, DOM, Pickup, Cake, Image, Tween, Delay").attr({
-                                        x: this.x + (this.w - 48) / 2,
-                                        y: this.y - 64
+                                    Crafty.e("2D, Canvas, Pickup, Cake, Image").attr({
+                                        x: this._x + (this._w - 48) / 2,
+                                        y: this._y - 64
                                     })
                                     .image("assets/images/cake.png");
                                 }
@@ -779,6 +824,7 @@
                     if(isDead) {
                         Crafty.audio.play('dead', 1, 0.2);
                         Crafty.unbind("EnterFrame", scrollViewport);
+                        Crafty.unbind("EnterFrame", throwApples);
                         this.unbind('EnterFrame', updateOctocat);
                         setTimeout(function () {
                             Crafty.scene('dead');
@@ -887,7 +933,7 @@
             Crafty.background("#fff");
             var images = [];
             images = images.concat("title.png", "cratfy_logo.png", "github_logo.png");
-            images = images.concat("gantt_bg.png", "business_frog.png", "portal.png", "cake.png", 
+            images = images.concat("gantt_bg.png", "business_frog.png", "portal.png", "cake.png", "apple.png",
             		"briefcase.png", "hamburger.png", "smoke_jump.png", "speaker.png", "mute.png");
 
             var audio = {
