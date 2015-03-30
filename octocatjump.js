@@ -28,6 +28,9 @@
             score = 0,
             stars = 0,
             forks = 0,
+            criticalPathCounter = 0,
+            lastCriticalPath = -2,
+            criticalPathBonus = 1,
             n = 10,
             isDead = false;
 
@@ -265,15 +268,22 @@
             Crafty.background("#fff");
 
             function starCounter(e) {
-            	this.replace('<div style="text-align: center"><img src="assets/images/hamburger.png"/><span style="color: #222; font: 36px Sniglet; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)"><small>&nbsp;X&nbsp;</small>' + s + ' = ' + (s * 10) + '</span></div>');
+            	this.replace('<div style="text-align: center">' + 
+            			'<img src="assets/images/hamburger.png"/>' +
+            			'<span style="color: #222; font: 36px Sniglet; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)">' +
+            			'<small>&nbsp;X&nbsp;</small>' + s + ' = ' + (s * 10) + '</span></div>' +
+            			'<div style="text-align: center">' +
+            			'<span style="color: #222; font: 36px Sniglet; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)">' +
+            			'Critical Path = ' + criticalPathBonus + 'x' +
+            			'</span></div>');
 
             	if(++s > stars) {
             		this.unbind("EnterFrame");
 
-            		total = (s - 1) * 10 + score;
+            		total = ((s - 1) * 10 + score) * criticalPathBonus;
             		Crafty.e("2D, DOM, HTML").attr({
             			x: 0,
-            			y: 144,
+            			y: 174,
             			w: Crafty.viewport.width
             		}).replace('<div style="text-align: center; font: 48px Sniglet, Impact; color: #222; text-shadow: 0px 2px 4px rgba(0,0,0,.5);">Total = ' + total + '</div>');
             		return;
@@ -589,12 +599,22 @@
                     this._speed.y = obj.has("Major") ? -this.PUSH_HEIGHT : -this.JUMP_HEIGHT;
 
                     if(c.obj.has("Critical")) {
+                    	
+                    	if (obj._cpNum === lastCriticalPath + 1) {
+                    		criticalPathBonus++;
+                    	} else {
+                    		criticalPathBonus = 1;
+                    	}
+                    	
+                    	lastCriticalPath = obj._cpNum;
+                    	
                         if(obj.use) obj.use();
                         if(SFX) Crafty.audio.play("pull", 1, 0.2);
 
                         bgovr.color("#ff0000").delay(function () {
                             this.color(BG_COLOR);
                         }, 250);
+                        
                     } else if(c.obj.has("Major")) {
                         if(obj.use) obj.use();
 
@@ -610,6 +630,8 @@
         }
         
         function onHitApple(e) {
+        	
+        	if (!this._enabled) return;
         	
             var c = e[0],
                 obj = c.obj,
@@ -643,6 +665,9 @@
             Crafty.viewport.y = 0;
             score = 0;
             stars = 0;
+            criticalPathCounter = 0;
+            lastCriticalPath = -2;
+            criticalPathBonus = 1;
             n = 10;
             isDead = false;
         }
@@ -787,27 +812,38 @@
 
                                 var r = ~~ (10 * (1 + Math.random()));
                                 if(0 === n % r) {
+                                	
                                     this.addComponent("Critical");
+                                    this._cpNum = criticalPathCounter++;
+                                    
                                 } else if(!this.has("Critical") && 0 === n % (r + 1)) {
+                                	
                                     this.addComponent("Major");
+                                    
                                 } else if(0 === n % (r + 2)) {
+                                	
                                     Crafty.e("2D, Canvas, Pickup, Briefcase, Image, Tween, Delay").attr({
                                         x: this._x + (this._w - 48) / 2,
                                         y: this._y - 64
                                     })
                                     .image("assets/images/briefcase.png");
+                                    
                                 } else if(0 === n % 2) {
+                                	
                                     Crafty.e("2D, Canvas, Pickup, Burger, Image, Tween, Delay").attr({
                                         x: this._x + (this._w - 48) / 2,
                                         y: this._y - 64
                                     })
                                     .image("assets/images/hamburger.png");
+                                    
                                 } else if(0 === n % 9) {
+                                	
                                     Crafty.e("2D, Canvas, Pickup, Cake, Image").attr({
                                         x: this._x + (this._w - 48) / 2,
                                         y: this._y - 64
                                     })
                                     .image("assets/images/cake.png");
+                                    
                                 }
                                 this.trigger("Recycled");
                             }
