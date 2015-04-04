@@ -18,6 +18,8 @@ Credits
 The original game was made by [Omar Goshen](https://github.com/ogoshen).
 [Pow Studio](http://powstudios.com/content/smoke-animation-pack-1) - for the smoke jump sprite.  
 
+Loading Spinner: (https://github.com/tobiasahlin/SpinKit)
+
 Coffe Cup Image: (https://openclipart.org/detail/193527/coffee-cup)
 
 Coffee Sound: (http://www.freesound.org/people/Cabeeno%20Rossley/sounds/126412/)
