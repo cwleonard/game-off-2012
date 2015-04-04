@@ -27,6 +27,7 @@
       filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e0e2e4', endColorstr='#b9bbbd',GradientType=0 ); /* IE6-9 */
     }
     #cr-stage {
+      display: none;
       border:1px solid #999; 
       margin:50px auto; 
       color:white; 
@@ -34,14 +35,18 @@
       box-shadow: 0px 0px 32px 0px rgba(0, 0, 0, .5);
     }
     #loader { 
-      background: url('assets/images/octocat-spinner-128.gif') no-repeat center center #fff;
       width: 400px;
       height: 640px;
       border:1px solid #999; 
       margin:50px auto; 
-      color:white; 
+      background-color:white; 
       -webkit-box-shadow: 0px 0px 32px 0px rgba(0, 0, 0, .5);
       box-shadow: 0px 0px 32px 0px rgba(0, 0, 0, .5);
+    }
+    
+    #loader p {
+      font-size: 24pt;
+      text-align: center;
     }
 
     #scoreboard td, th {
@@ -69,10 +74,78 @@
     #scoreboard td:first-child {
       border-right: 1px solid gray;
     }
+    
+    
+    
+.spinner {
+  margin: 100px auto;
+  width: 150px;
+  height: 90px;
+  text-align: center;
+  font-size: 10px;
+}
+
+.spinner > div {
+  background-color: #006600;
+  height: 100%;
+  width: 18px;
+  display: inline-block;
+  
+  -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+  animation: stretchdelay 1.2s infinite ease-in-out;
+}
+
+.spinner .rect2 {
+  -webkit-animation-delay: -1.1s;
+  animation-delay: -1.1s;
+}
+
+.spinner .rect3 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+.spinner .rect4 {
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s;
+}
+
+.spinner .rect5 {
+  -webkit-animation-delay: -0.8s;
+  animation-delay: -0.8s;
+}
+
+@-webkit-keyframes stretchdelay {
+  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }  
+  20% { -webkit-transform: scaleY(1.0) }
+}
+
+@keyframes stretchdelay {
+  0%, 40%, 100% { 
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4);
+  }  20% { 
+    transform: scaleY(1.0);
+    -webkit-transform: scaleY(1.0);
+  }
+}    
+    
+    
+    
+    
   </style>
 </head>
 <body>
-  <div id="loader"></div>
+  <div id="loader">
+  	<div class="spinner">
+  		<div class="rect1"></div>
+		<div class="rect2"></div>
+		<div class="rect3"></div>
+  		<div class="rect4"></div>
+  		<div class="rect5"></div>
+	</div>
+	<p>Loading...</p>
+  </div>
   <script type="text/javascript" src="jquery-1.11.2.min.js"></script>
   <script type="text/javascript" src="crafty.js"></script>
   <script type="text/javascript" src="octocatjump.js"></script>

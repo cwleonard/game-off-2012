@@ -31,6 +31,7 @@
             criticalPathCounter = 0,
             lastCriticalPath = -2,
             criticalPathBonus = 1,
+            hoopBonus = 0;
             n = 10,
             isDead = false;
 
@@ -45,6 +46,7 @@
                 x: Crafty.viewport.width / 2 - 50,
                 y: Crafty.viewport.height - 50,  
                 w: 100,
+                z: 50,
                 h: PLATFORM_HEIGHT
             }];
 
@@ -54,12 +56,156 @@
                     y: -Crafty.viewport.y + Crafty.viewport.height - i * 100,
                     w: 50 + 50 * Math.random(),
                     h: PLATFORM_HEIGHT,
+                    z: 50,
                     num: i
                 });
             }
         }
         initLevel();
 
+        Crafty.c("RingSide", {
+        	init: function() {
+        		this._canHit = false;
+        		this._owner = null;
+        	},
+            useRing: function() {
+            	if (this._owner) {
+            		this._owner.use();
+            	}
+            },
+            spinRing: function() {
+            	if (this._owner) {
+            		this._owner.spin();
+            	}
+            }
+        });
+        
+        Crafty.c("Ring", {
+
+            init: function () {
+            	
+            	this._canHit = false;
+            	
+        		this.x = (Crafty.viewport.width - 240) * Math.random();
+        		this.y = -Crafty.viewport.y - 100;
+
+            	var rx = this._x;
+            	var ry = this._y;
+            	
+                this._ringBack = Crafty.e("2D, DOM, Image").attr({
+                	x: rx,
+                	y: ry,
+                    z: 1
+                }).image("assets/images/ring_back.png");
+
+                this._ringFront = Crafty.e("2D, DOM, Image").attr({
+                	x: rx,
+                	y: ry,
+                    z: 1000
+                }).image("assets/images/ring_front.png");
+            	
+                this.attach(this._ringBack);
+                this.attach(this._ringFront);
+                
+                
+                this._ringLeftSide = Crafty.e("2D, Collision, RingSide").attr({
+                    x: rx,
+                    y: ry,
+                    w: 30,
+                    h: 60
+                }).onHit("Player", onHitRingSide);
+
+                this._ringRightSide = Crafty.e("2D, Collision, RingSide").attr({
+                    x: rx + 220,
+                    y: ry,
+                    w: 30,
+                    h: 60
+                }).onHit("Player", onHitRingSide);
+                
+                
+                this._ringMiddle = Crafty.e("2D, Collision, RingSide").attr({
+                    x: rx + 95,
+                    y: ry,
+                    w: 50,
+                    h: 1
+                }).onHit("Player", onHitRing);
+                
+                this._ringLeftSide._owner = this;
+                this._ringRightSide._owner = this;
+                this._ringMiddle._owner = this;
+                
+                this.turnOn();
+                
+                this.bind("EnterFrame", this._enterframe);
+            	
+            },
+            
+            turnOff: function() {
+            	this._canHit = false;
+            	this._ringMiddle._canHit = false;
+            	this._ringLeftSide._canHit = false;
+            	this._ringRightSide._canHit = false;
+            },
+
+            turnOn: function() {
+            	this._canHit = true;
+            	this._ringMiddle._canHit = true;
+            	this._ringLeftSide._canHit = true;
+            	this._ringRightSide._canHit = true;
+            },
+
+            use: function() {
+
+        		this.turnOff();
+
+            	if(SFX) Crafty.audio.play('hoop', 1, 1);
+            	
+            	this.tween({
+            		y: this._y + 400
+            	}, 600).bind("TweenEnd", function (k) {
+            		this._ringBack.attr({
+            			alpha: 0
+            		});
+            		this._ringFront.attr({
+            			alpha: 0
+            		});
+            	}, 5);
+
+            
+            
+            },
+            
+            spin: function() {
+
+        		this.turnOff();
+
+            	if(SFX) Crafty.audio.play('spin', 1, 1);
+            	
+            	this.tween({
+            		rotation: 360
+            	}, 700).bind("TweenEnd", function (k) {
+            		this._ringBack.attr({
+            			alpha: 0
+            		});
+            		this._ringFront.attr({
+            			alpha: 0
+            		});
+            	}, 5);
+            	
+            },
+            
+            _enterframe: function () {
+            	if (this._y > (-Crafty.viewport.y + Crafty.viewport.height)) {
+            		this._ringMiddle.destroy();
+            		this._ringLeftSide.destroy();
+            		this._ringRightSide.destroy();
+            		this.destroy();
+            	}
+            }
+
+
+        });
+        
         Crafty.c("Apple", {
         	
         	_active: false,
@@ -316,7 +462,10 @@
         });
 
         Crafty.scene("dead", function initDead() {
-            // Crafty.background("#fff");
+        	
+        	Crafty.unbind("Pause");
+        	Crafty.unbind("Unpause");
+        	
             Crafty.viewport.y = 0;
             var s = 0,
                 total = 0;
@@ -329,16 +478,20 @@
             			'<small>&nbsp;X&nbsp;</small>' + s + ' = ' + (s * 10) + '</span></div>' +
             			'<div style="text-align: center">' +
             			'<span style="color: #222; font: 36px Sniglet; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)">' +
+            			'Hoops<small>&nbsp;X&nbsp;</small>' + hoopBonus + ' = ' + (hoopBonus * 100) +
+            			'</span></div>' +
+            			'<div style="text-align: center">' +
+            			'<span style="color: #222; font: 36px Sniglet; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)">' +
             			'Critical Path = ' + criticalPathBonus + 'x' +
             			'</span></div>');
 
             	if(++s > stars) {
             		this.unbind("EnterFrame");
 
-            		total = ((s - 1) * 10 + score) * criticalPathBonus;
+            		total = ((s - 1) * 10 + (hoopBonus * 100) + score) * criticalPathBonus;
             		Crafty.e("2D, DOM, HTML").attr({
             			x: 0,
-            			y: 174,
+            			y: 215,
             			w: Crafty.viewport.width
             		}).replace('<div style="text-align: center; font: 48px Sniglet, Impact; color: #222; text-shadow: 0px 2px 4px rgba(0,0,0,.5);">Total = ' + total + '</div>');
             		return;
@@ -385,7 +538,7 @@
                 $tbl.append($row);
             }
             Crafty.e("HTML, ScoreBoard")
-            .attr({x:20, y:250, w:Crafty.viewport.width - 40})
+            .attr({x:20, y:300, w:Crafty.viewport.width - 40})
             .css({
                 'color': '#000',
                 'border': '2px solid #000',
@@ -567,10 +720,9 @@
                 x: this.x - 48,
                 y: this.y - 48,
                 w: 192,
-                h: 192
+                h: 192,
+                z: 500
             });
-
-            // octocat.delay(octocat.enableControls, 500);
 
             function colorBg() {
                 bgovr.color("#fff");
@@ -663,6 +815,7 @@
                     	} else {
                     		criticalPathBonus = 1;
                     	}
+                    	bonusText("Critical Path x" + criticalPathBonus + "!", 50);
                     	
                     	lastCriticalPath = obj._cpNum;
                     	
@@ -728,6 +881,63 @@
         	
         }
 
+        
+        function onHitRing(e) {
+
+            if (!this._canHit) return;
+
+            this.useRing();
+            
+            hoopBonus++;
+            
+            bonusText("Hoop<br>Bonus!");
+            
+        	var bgovr = Crafty("BackgroundOverlay");
+            bgovr.color("#ff3300").delay(function () {
+                this.color(BG_COLOR);
+            }, 250);
+
+        	
+        }
+
+        function onHitRingSide(e) {
+
+            if (!this._canHit) return;
+
+            this.spinRing();
+            
+        	var bgovr = Crafty("BackgroundOverlay");
+            bgovr.color("#cc00cc").delay(function () {
+                this.color(BG_COLOR);
+            }, 250);
+        	
+        }
+
+        
+        function bonusText(txt, size) {
+        	
+        	var fSize = (size || 72) + "px";
+        	
+        		Crafty.e("2D, DOM, Text, Delay, BonusText").css({
+        			"text-align": "center",
+        			"color": "#fff",
+        			'textShadow': '0px 2px 8px rgba(0,0,0,.9), -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000'
+        		}).attr({
+        			x: 0,
+        			y: -Crafty.viewport.y + (Crafty.viewport.height / 4),
+        			w: Crafty.viewport.width,
+        			z: 9999
+        		}).textFont({
+        			"family": "Sniglet",
+        			"size": fSize
+        		})
+        		.delay(function() {
+        			this.destroy();
+        		}, 750)
+        		.text(txt);
+
+        }
+        
         function initState() {
             Crafty.background("none");
             Crafty.viewport.y = 0;
@@ -736,6 +946,7 @@
             criticalPathCounter = 0;
             lastCriticalPath = -2;
             criticalPathBonus = 1;
+            hoopBonus = 0;
             n = 10;
             isDead = false;
         }
@@ -784,17 +995,10 @@
             .onHit("Platform", onHitPlatform);
 
             
-            var ringBack = Crafty.e("2D, Canvas, Image").attr({
-                x: 100,
-                y: 0,
-                z: 1
-            }).image("assets/images/ring_back.png");
-
-            var ringFront = Crafty.e("2D, DOM, Image").attr({
-                x: 100,
-                y: 0,
-                z: 1000
-            }).image("assets/images/ring_front.png");
+            
+            
+            var theApple = null;
+            
 
             
             function scrollViewport(e) {
@@ -815,23 +1019,7 @@
             }
             Crafty.bind("EnterFrame", scrollViewport);
             
-            var theApple = null;
-            function throwApples(e) {
-            	
-            	if (n > 80 && (Math.random() < 0.02)) {
-            		
-            		if (theApple === null) {
-            			theApple = Crafty.e("2D, DOM, Image, Tween, Apple")
-            				.image("assets/images/apple.png");
-            		} else {
-            			if (!theApple._active) {
-            				theApple.reset();
-            			}
-            		}
-            	}
-
-            }
-            Crafty.bind("EnterFrame", throwApples)
+            
 
             Crafty.bind("Pause", function onPause() {
                 // Crafty.audio.mute();
@@ -931,6 +1119,24 @@
                                     })
                                     .image("assets/images/cake.png");
                                     
+                                } else if(n > 50 && 0 === n % 7) {
+                                	
+                                	Crafty.e("2D, Collision, Tween, Ring").attr({
+                        				w: 240,
+                        				h: 70
+                        			}).origin(120,35);
+                                    
+                                } else if (n > 80 && 0 === n % 5) {
+                                	
+                                	if (theApple === null) {
+                                		theApple = Crafty.e("2D, DOM, Image, Tween, Apple")
+                                		.image("assets/images/apple.png");
+                                	} else {
+                                		if (!theApple._active) {
+                                			theApple.reset();
+                                		}
+                                	}
+                                	
                                 }
                                 this.trigger("Recycled");
                             }
@@ -947,7 +1153,7 @@
                     if(isDead) {
                         Crafty.audio.play('dead', 1, 0.2);
                         Crafty.unbind("EnterFrame", scrollViewport);
-                        Crafty.unbind("EnterFrame", throwApples);
+                        //Crafty.unbind("EnterFrame", throwApples);
                         this.unbind('EnterFrame', updateOctocat);
                         setTimeout(function () {
                             Crafty.scene('dead');
@@ -1046,6 +1252,7 @@
         });
 
         Crafty.scene("loading", function () {
+        	
             var imgPath = function (x) {
                     return "assets/images/" + x;
                 };
@@ -1055,10 +1262,9 @@
 
             Crafty.background("#fff");
             var images = [];
-            images = images.concat("title.png", "cratfy_logo.png", "github_logo.png");
-            images = images.concat("gantt_bg.png", "business_frog.png", "portal.png", "cake.png",
-            		"apple.png", "briefcase.png", "coffee.png", "smoke_jump.png", "speaker.png",
-            		"mute.png", "black_end_cap.png", "red_end_cap.png", "ring_back.png",
+            images = images.concat("title.png", "gantt_bg.png", "business_frog.png", "portal.png", 
+            		"cake.png", "apple.png", "briefcase.png", "coffee.png", "smoke_jump.png",
+            		"speaker.png", "mute.png", "black_end_cap.png", "red_end_cap.png", "ring_back.png",
             		"ring_front.png");
 
             var audio = {
@@ -1070,6 +1276,8 @@
                 "cake":  ["cake.mp3", "cake.ogg", "cake.wav"].map(sndPath),
                 "bonk":  ["bonk.mp3", "bonk.ogg", "bonk.wav"].map(sndPath),
                 "dead":  ["dead.mp3", "dead.ogg", "dead.wav"].map(sndPath),
+                "spin":  ["spin.mp3", "spin.ogg", "spin.wav"].map(sndPath),
+                "hoop":  ["hoop.mp3", "hoop.ogg", "hoop.wav"].map(sndPath),
                 "click": ["click.mp3", "click.ogg", "click.wav"].map(sndPath)
             };
             
@@ -1079,8 +1287,9 @@
             }
             
             Crafty.load(assetsObj, function onLoad() {
+            	
                 $("#loader").remove();
-
+                $("#cr-stage").show();
 
                 Crafty.sprite(96, "assets/images/business_frog.png", {
                     Octocat: [0, 0]
@@ -1096,6 +1305,7 @@
 
                 Crafty.scene("intro");
             });
+            
         });
 
         Crafty.scene("intro", function initIntro() {
@@ -1112,7 +1322,8 @@
             }).textFont({
             	"family": "Sniglet",
             	"size": "22px"
-            }).text('Press ESC to skip intro');
+            });
+            
             txt.bind("EnterFrame", function (e) {
                 var f = e.frame % 100;
                 this.alpha = ~~ (f < 50);
@@ -1123,55 +1334,19 @@
                 Crafty.scene("main");
             });
 
-            //TODO: un-nest this crap
-            Crafty.e("2D, Canvas, Image, Tween, Delay").attr({
-                x: (400 - 174) / 2,
-                y: (640 - 174) / 2,
-                alpha: 0
-            }).image('assets/images/github_logo.png').tween({
-            // }).image(R.GITHUB_LOGO_PNG).tween({
-                alpha: 1
-            }, 50).bind("TweenEnd", function () {
-                this.unbind("TweenEnd");
-                this.delay(function () {
-                    this.tween({
-                        alpha: 0
-                    }, 50).bind("TweenEnd", function () {
-                        this.unbind("TweenEnd");
-                        var crafty = Crafty.e("2D, Canvas, Image, Tween, Delay").attr({
-                            x: (400 - 147) / 2,
-                            y: (640 - 120) / 2,
-                            alpha: 0
-                        // }).image(R.CRATFY_LOGO_PNG).tween({
-                        }).image('assets/images/cratfy_logo.png').tween({
-                            alpha: 1
-                        }, 50).bind("TweenEnd", function () {
-                            this.unbind("TweenEnd");
-                            this.delay(function () {
-                                this.tween({
-                                    alpha: 0
-                                }, 50).bind("TweenEnd", function () {
-                                    Crafty.e("2D, Canvas, Image, Tween, Keyboard").attr({
-                                        alpha: 0
-                                    // }).image(R.TITLE_PNG).tween({
-                                    }).image('assets/images/title.png').tween({
-                                        alpha: 1
-                                    }, 100).bind("TweenEnd", function () {
-                                        txt.text('Press any key to start the game').css('color', '#fff');
-                                        this.bind("KeyDown", function () {
-                                            Crafty.scene("main");
-                                        });
-                                    });
 
-                                    // setTimeout(function () {
-                                    //     Crafty.scene("main");
-                                    // }, 250);
-                                });
-                            }, 500);
-                        });
-                    });
-                }, 500);
+            Crafty.e("2D, Canvas, Image, Tween, Keyboard").attr({
+                alpha: 0
+            }).image('assets/images/title.png').tween({
+                alpha: 1
+            }, 1000).bind("TweenEnd", function () {
+                txt.text('Press any key to start the game').css('color', '#fff');
+                this.bind("KeyDown", function () {
+                    Crafty.scene("main");
+                });
             });
+        
+            
         });
 
         Crafty.scene("loading");
