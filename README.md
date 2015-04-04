@@ -25,3 +25,7 @@ Coffee Sound: (http://www.freesound.org/people/Cabeeno%20Rossley/sounds/126412/)
 Apple Bonk Sound: (http://www.freesound.org/people/timgormly/sounds/170141/)
 
 Cake Sound: (http://www.freesound.org/people/plasterbrain/sounds/243020/)
+
+Spin Sound: (http://freesound.org/people/jhka/sounds/139001/)
+
+Hoop Sound: (http://freesound.org/people/suntemple/sounds/253177/)
