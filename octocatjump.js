@@ -8,6 +8,87 @@
  *     A Github Game Off 2012 Entry
  *     @copyright Omer Goshen <gershon@goosemoose.com>
  */
+
+function saveHighScore(data) {
+	
+	if (data.shouldPrompt) {
+		var playerName = prompt("Please enter your name");
+		postScore(playerName, data.score);
+	} else {
+		populateHighScores();
+	}
+	
+}
+
+function checkScore(score) {
+	
+	$.ajax({
+		type: 'GET',
+		url: "http://caseyleonard.com:1337/checkScore/" + score,
+		jsonpCallback: 'saveHighScore',
+		dataType: 'jsonp',
+		success: function(json) {
+			//console.log(json);
+		},
+		error: function(e) {
+			console.log(e.message);
+		}
+	});
+
+	
+}
+
+function processHighScores(data) {
+	
+	var $tbl = $('#scoreboard');
+    for(var i=0; i<data.length; i++) {
+    	var n = data[i].name;
+    	var s = data[i].score;
+        var $row = ('<tr><td>' + n + '</td><td>' + s + '</td></tr>');
+        $tbl.append($row);
+    }
+	
+}
+
+function populateHighScores() {
+
+	$.ajax({
+		type: 'GET',
+		url: "http://caseyleonard.com:1337/scores",
+		jsonpCallback: 'processHighScores',
+		contentType: "application/json",
+		dataType: 'jsonp',
+		success: function(json) {
+			//console.log(json);
+		},
+		error: function(e) {
+			console.log(e.message);
+		}
+	});	
+}
+
+function scorePosted() {
+	populateHighScores();
+}
+
+function postScore(playerName, score) {
+	
+	$.ajax({
+		type: 'GET',
+		url: "http://caseyleonard.com:1337/score/" + playerName + "/" + score,
+		jsonpCallback: 'scorePosted',
+		dataType: 'jsonp',
+		success: function(json) {
+			//console.log(json);
+		},
+		error: function(e) {
+			console.log(e.message);
+		}
+	});
+
+}
+
+
 (function octocatJump($, Crafty) {
     $(document).ready(function documentReady() {
     	
@@ -494,6 +575,35 @@
             			y: 215,
             			w: Crafty.viewport.width
             		}).replace('<div style="text-align: center; font: 48px Sniglet, Impact; color: #222; text-shadow: 0px 2px 4px rgba(0,0,0,.5);">Total = ' + total + '</div>');
+            		
+            		
+            		checkScore(total);
+            		
+            		
+            		
+            		
+                    var $tbl = $('<table><tr style="border-bottom: 2px solid black"><th>Name</th><th>Score</th></tr>');
+//                  for(var i=0; i<10; i++) {
+//                      // var $row = ('<tr><td>Name</td><td>' + (score + stars * 10) + '</td></tr>');
+//                      var $row = ('<tr><td>Name</td><td>Score</td></tr>');
+//                      $tbl.append($row);
+//                  }
+                  Crafty.e("HTML, ScoreBoard")
+                  .attr({x:20, y:300, w:Crafty.viewport.width - 40})
+                  .css({
+                      'color': '#000',
+                      'border': '2px solid #000',
+                      'borderRadius': '8px'
+                      // 'boxShadow': '0px 8px 8px rgba(0,0,0,.2)'
+                  })
+                  .append('<table id="scoreboard" cellspacing="0">' + $tbl.html() + '</table>');
+                  //console.log([$tbl, $tbl.html()]);
+            		
+            		
+            		
+            		
+            		
+            		
             		return;
             	}
             }
@@ -531,22 +641,11 @@
                 s = Math.min(s, score);
             });
 
-            var $tbl = $('<table><tr style="border-bottom: 2px solid black"><th>Name</th><th>Score</th></tr>');
-            for(var i=0; i<10; i++) {
-                // var $row = ('<tr><td>Name</td><td>' + (score + stars * 10) + '</td></tr>');
-                var $row = ('<tr><td>Name</td><td>Score</td></tr>');
-                $tbl.append($row);
-            }
-            Crafty.e("HTML, ScoreBoard")
-            .attr({x:20, y:300, w:Crafty.viewport.width - 40})
-            .css({
-                'color': '#000',
-                'border': '2px solid #000',
-                'borderRadius': '8px'
-                // 'boxShadow': '0px 8px 8px rgba(0,0,0,.2)'
-            })
-            .append('<table id="scoreboard" cellspacing="0">' + $tbl.html() + '</table>');
-            //console.log([$tbl, $tbl.html()]);
+            
+    		
+
+//            populateHighScores();
+            
 
             var _scene = this;
             setTimeout(function () {

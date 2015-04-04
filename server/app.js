@@ -23,16 +23,58 @@ scores.push({
 	"score":12345
 });
 
-app.post('/score/:n/:s', function(req, res, next) {
+
+
+function arrangeScores() {
+	
+	scores.sort(function(a, b) {
+	    return b.score - a.score;
+	});
+	scores = scores.slice(0, 10);
+	
+}
+
+
+app.get('/checkScore/:s', function(req, res, next) {
+
+	var s = Number(req.params.s);
+	
+	var fn = req.query.callback
+	var highScore = false;
+	
+	arrangeScores();
+	if (scores.length < 10 || s > scores[scores.length-1].score) {
+		highScore = true;
+	}
+	
+	var data = {
+			"shouldPrompt": highScore,
+			"score": s
+	}
+	
+	var js = fn + "(" + JSON.stringify(data) + ");";
+	
+	res.setHeader('Content-Type', 'application/javascript');
+	res.send(js);
+
+});
+
+
+
+
+app.get('/score/:n/:s', function(req, res, next) {
 
 	var scoreObj = {
 			"name": req.params.n,
 			"score": req.params.s
 	}
-	
 	scores.push(scoreObj);
 	
-	res.sendStatus(200);
+	var fn = req.query.callback
+	var js = fn + "();";
+	
+	res.setHeader('Content-Type', 'application/javascript');
+	res.send(js);
 
 });
 
@@ -41,11 +83,14 @@ app.post('/score/:n/:s', function(req, res, next) {
 app.get('/scores', function(req, res, next) {
 
 	var fn = req.query.callback
+
+	arrangeScores();
 	
 	var data = JSON.stringify(scores);
 	
 	var js = fn + "(" + data + ");";
 	
+	res.setHeader('Content-Type', 'application/javascript');
 	res.send(js);
 
 });
