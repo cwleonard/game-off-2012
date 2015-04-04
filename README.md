@@ -17,3 +17,11 @@ Credits
 -------
 The original game was made by [Omar Goshen](https://github.com/ogoshen).
 [Pow Studio](http://powstudios.com/content/smoke-animation-pack-1) - for the smoke jump sprite.  
+
+Coffe Cup Image: (https://openclipart.org/detail/193527/coffee-cup)
+
+Coffee Sound: (http://www.freesound.org/people/Cabeeno%20Rossley/sounds/126412/)
+
+Apple Bonk Sound: (http://www.freesound.org/people/timgormly/sounds/170141/)
+
+Cake Sound: (http://www.freesound.org/people/plasterbrain/sounds/243020/)

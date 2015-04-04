@@ -61,30 +61,69 @@
         initLevel();
 
         Crafty.c("Apple", {
-            init: function () {
+        	
+        	_active: false,
+        	_canHit: false,
+        	
+        	reset: function() {
             	this._dir = (Math.random() < 0.5 ? -1 : 1);
             	this.x = ( this._dir > 0 ? -(this._w) : (Crafty.viewport.width + (this._w)));
             	this.y = (Crafty.viewport.height / 4) - (Crafty.viewport.y);
             	this.z = 9999;
+            	this.alpha = 1;
+            	this._active = true;
+            	this._canHit = true;
+        	},
+        	
+            init: function () {
+            	this.reset();
             	this.bind("EnterFrame", this._enterframe);
             },
 
             _enterframe: function () {
-            	this.x = this._x + (this._dir * 4.5);
+            	if (this._active) {
+            		this.x = this._x + (this._dir * 4.5);
+            	}
             	if (this._x < -(this._w*2) || this._x > Crafty.viewport.width + (this._w*2)) {
-            		this.destroy();
+            		this._active = false;
             	}
             }
+            
         });
 
         Crafty.c("Major", {
-            _label: null,
-            init: function () {
+
+        	init: function () {
+            	
                 this.color(MAJOR_TASK_COLOR);
                 this.h = MAJOR_PLATFORM_HEIGHT;
+
+                this._leftCap = Crafty.e("2D, DOM, Image").attr({
+                    x: this._x,
+                    y: this._y
+                }).image("assets/images/black_end_cap.png");
+
+                this._rightCap = Crafty.e("2D, DOM, Image").attr({
+                    x: this._x + (this._w - 1),
+                    y: this._y
+                }).image("assets/images/black_end_cap.png");
+
+                this.attach(this._leftCap);
+                this.attach(this._rightCap);
+            
+            },
+            
+            moveCap: function() {
+            	this._rightCap.attr({
+            		x: this._x + (this._w - 1)
+            	});
             },
 
             use: function () {
+            	
+            	this._leftCap.destroy();
+            	this._rightCap.destroy();
+            	
                 this.tween({
                     alpha: 0
                 }, 25).bind("TweenEnd", function (k) {
@@ -102,10 +141,26 @@
         Crafty.c("Critical", {
             _label: null,
             init: function () {
+            	
                 this.color(CP_TASK_COLOR);
+                
+                this._rightCap = Crafty.e("2D, DOM, Image").attr({
+                    x: this._x + (this._w + 3),
+                    y: this._y + (this._h / 2)
+                }).image("assets/images/red_end_cap.png");
+
+                this.attach(this._rightCap);
+            
+            },
+            
+            moveCap: function() {
+            	this._rightCap.attr({
+            		x: this._x + (this._w - 1)
+            	});
             },
 
             use: function () {
+            	this._rightCap.destroy();
                 this.tween({
                     alpha: 0
                 }, 25).bind("TweenEnd", function (k) {
@@ -269,7 +324,7 @@
 
             function starCounter(e) {
             	this.replace('<div style="text-align: center">' + 
-            			'<img src="assets/images/hamburger.png"/>' +
+            			'<img src="assets/images/coffee.png"/>' +
             			'<span style="color: #222; font: 36px Sniglet; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)">' +
             			'<small>&nbsp;X&nbsp;</small>' + s + ' = ' + (s * 10) + '</span></div>' +
             			'<div style="text-align: center">' +
@@ -383,7 +438,7 @@
             entity.z = 999;
 
 
-            if(SFX) Crafty.audio.play('star', 1, 0.5);
+            if(SFX) Crafty.audio.play('cake', 1, 0.5);
 
             entity.removeComponent("Pickup");
             entity.removeComponent("Cake", true);
@@ -397,6 +452,9 @@
                 	"w": width,
                 	"x": nx
                 });
+                if (p.moveCap) {
+                	p.moveCap();
+                }
             });
             
 
@@ -419,7 +477,7 @@
             if(SFX) Crafty.audio.play('star', 1, 0.5);
 
             entity.removeComponent("Pickup");
-            entity.removeComponent("Burger", true);
+            entity.removeComponent("Coffee", true);
 
             var t0 = Crafty.frame(),
                 // x0 = entity.x,
@@ -447,7 +505,7 @@
                 if(d <= 10) {
                     this.unbind("EnterFrame");
                     stars++;
-                    Crafty("Stars").replace('<div id="stars" style="position: relative; top: 0px;"><img src="assets/images/hamburger.png"/><span style="font: 36px Sniglet; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)">&nbsp;x&nbsp;' + stars + '</span></div>');
+                    Crafty("Stars").replace('<div id="stars" style="position: relative; top: 0px;"><img src="assets/images/coffee.png"/><span style="font: 36px Sniglet; margin-top: -12px; text-shadow: 0px 2px 4px rgba(0,0,0,.5)">&nbsp;x&nbsp;' + stars + '</span></div>');
                     $("#stars").animate({
                         'top': '+=10px',
                         'zoom': 1.02
@@ -634,14 +692,21 @@
         	if (!this._enabled) return;
         	
             var c = e[0],
-                obj = c.obj,
-                octocat = Crafty("Player"),
+                obj = c.obj;
+            
+            if (!obj._canHit) return;
+            
+            obj._canHit = false;
+            
+            var octocat = Crafty("Player"),
                 bgovr = Crafty("BackgroundOverlay");
 
             var _ox = octocat._x;
             var _ax = obj._x;
             var _ay = obj._y;
-            
+
+            if(SFX) Crafty.audio.play('bonk', 1, 0.5);
+
             octocat.tween({
             	x: _ox + (150 * obj._dir)
             }, 500);
@@ -650,7 +715,10 @@
             	x: _ox - (250 * obj._dir),
             	y: _ay + 250
             }, 500).bind("TweenEnd", function (k) {
-            	obj.destroy();
+            	obj._active = false;
+            	obj.attr({
+            		alpha: 0
+            	})
             }, 5);
             
             bgovr.color("#ff000").delay(function () {
@@ -709,12 +777,24 @@
                 z: 999
             }).reel("walk", 500, 0, 0, 3).animate('walk', -1)
             .collision(new Crafty.circle(48, 48, 32))
-            .onHit("Burger", onHitStar)
+            .onHit("Coffee", onHitStar)
             .onHit("Cake", onHitCake)
             .onHit("Apple", onHitApple)
             .onHit("Briefcase", onHitFork)
             .onHit("Platform", onHitPlatform);
 
+            
+            var ringBack = Crafty.e("2D, Canvas, Image").attr({
+                x: 100,
+                y: 0,
+                z: 1
+            }).image("assets/images/ring_back.png");
+
+            var ringFront = Crafty.e("2D, DOM, Image").attr({
+                x: 100,
+                y: 0,
+                z: 1000
+            }).image("assets/images/ring_front.png");
 
             
             function scrollViewport(e) {
@@ -730,17 +810,24 @@
                 if (bg2._x <= -490) {
                 	bg2.x = 490;
                 }
-                bgovr.y = -Crafty.viewport.y;
+                bgovr.y = -Crafty.viewport.y; 
 
             }
             Crafty.bind("EnterFrame", scrollViewport);
             
-            
+            var theApple = null;
             function throwApples(e) {
             	
-            	if (n > 50 && (Math.random() < 0.01)) {
-            		Crafty.e("2D, DOM, Image, Tween, Apple")
-            			.image("assets/images/apple.png");
+            	if (n > 80 && (Math.random() < 0.02)) {
+            		
+            		if (theApple === null) {
+            			theApple = Crafty.e("2D, DOM, Image, Tween, Apple")
+            				.image("assets/images/apple.png");
+            		} else {
+            			if (!theApple._active) {
+            				theApple.reset();
+            			}
+            		}
             	}
 
             }
@@ -830,11 +917,11 @@
                                     
                                 } else if(0 === n % 2) {
                                 	
-                                    Crafty.e("2D, Canvas, Pickup, Burger, Image, Tween, Delay").attr({
+                                    Crafty.e("2D, Canvas, Pickup, Coffee, Image, Tween, Delay").attr({
                                         x: this._x + (this._w - 48) / 2,
                                         y: this._y - 64
                                     })
-                                    .image("assets/images/hamburger.png");
+                                    .image("assets/images/coffee.png");
                                     
                                 } else if(0 === n % 9) {
                                 	
@@ -969,16 +1056,20 @@
             Crafty.background("#fff");
             var images = [];
             images = images.concat("title.png", "cratfy_logo.png", "github_logo.png");
-            images = images.concat("gantt_bg.png", "business_frog.png", "portal.png", "cake.png", "apple.png",
-            		"briefcase.png", "hamburger.png", "smoke_jump.png", "speaker.png", "mute.png");
+            images = images.concat("gantt_bg.png", "business_frog.png", "portal.png", "cake.png",
+            		"apple.png", "briefcase.png", "coffee.png", "smoke_jump.png", "speaker.png",
+            		"mute.png", "black_end_cap.png", "red_end_cap.png", "ring_back.png",
+            		"ring_front.png");
 
             var audio = {
-                "jump": ["jump.mp3", "jump.ogg", "jump.wav"].map(sndPath),
-                "push": ["push.mp3", "push.ogg", "push.wav"].map(sndPath),
-                "pull": ["pull.mp3", "pull.ogg", "pull.wav"].map(sndPath),
-                "fork": ["fork.mp3", "fork.ogg", "fork.wav"].map(sndPath),
-                "star": ["star.mp3", "star.ogg", "star.wav"].map(sndPath),
-                "dead": ["dead.mp3", "dead.ogg", "dead.wav"].map(sndPath),
+                "jump":  ["jump.mp3", "jump.ogg", "jump.wav"].map(sndPath),
+                "push":  ["push.mp3", "push.ogg", "push.wav"].map(sndPath),
+                "pull":  ["pull.mp3", "pull.ogg", "pull.wav"].map(sndPath),
+                "fork":  ["fork.mp3", "fork.ogg", "fork.wav"].map(sndPath),
+                "star":  ["star.mp3", "star.ogg", "star.wav"].map(sndPath),
+                "cake":  ["cake.mp3", "cake.ogg", "cake.wav"].map(sndPath),
+                "bonk":  ["bonk.mp3", "bonk.ogg", "bonk.wav"].map(sndPath),
+                "dead":  ["dead.mp3", "dead.ogg", "dead.wav"].map(sndPath),
                 "click": ["click.mp3", "click.ogg", "click.wav"].map(sndPath)
             };
             
