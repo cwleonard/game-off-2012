@@ -4,26 +4,16 @@ var http = require('http');
 
 var app = express();
 
-var scores = [];
+var HIGHSCORES_FILE = 'highscores.json';
 
+var scores;
 
-// test stuff
-scores.push({
-	"name":"casey",
-	"score":34023
-});
-
-scores.push({
-	"name":"rebecca",
-	"score":1212
-});
-
-scores.push({
-	"name":"alex",
-	"score":12345
-});
-
-
+try {
+	scores = JSON.parse(fs.readFileSync(HIGHSCORES_FILE, { encoding: 'utf-8' }));
+} catch (e) {
+	console.log(e);
+	scores = [];
+}
 
 function arrangeScores() {
 	
@@ -59,9 +49,6 @@ app.get('/checkScore/:s', function(req, res, next) {
 
 });
 
-
-
-
 app.get('/score/:n/:s', function(req, res, next) {
 
 	var scoreObj = {
@@ -77,8 +64,6 @@ app.get('/score/:n/:s', function(req, res, next) {
 	res.send(js);
 
 });
-
-
 
 app.get('/scores', function(req, res, next) {
 
@@ -96,7 +81,20 @@ app.get('/scores', function(req, res, next) {
 });
 
 
+function saveHighScores() {
+	
+	fs.writeFile(HIGHSCORES_FILE, JSON.stringify(scores), function(err) {
+		if (err) {
+			console.log(err);
+		} else {
+			//console.log("saved high scores");
+		}
+		setTimeout(saveHighScores, 300000);
+	});
+	
+}
 
+setTimeout(saveHighScores, 300000);
 
 // ------------------------- start the listening
 
