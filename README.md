@@ -1,22 +1,50 @@
 Business Frog Jumps to Conclusions
 ============
 
-Put a screenshot here someday.
+![Title Screen](assets/images/ss-title.png)
+
+![Game Play](assets/images/ss-gameplay.png)
+
+![High Scores](assets/images/ss-highscores.png)
+
+Join Business Frog from [Amphibian.com](http://amphibian.com) as he jumps through
+the dystopian world of software project management. 
 
 About
 -----
 Fork of Octocat Jump (from the GitHub Game Off 2012), modified for the **GitHub Game Off 2015**.
 
-How to play goes here.
-
 The game is written in JavaScript using the [Crafty](http://craftyjs.com) framework.
+
 It also uses some [jQuery](http://jquery.com/).
+
+How To Play
+-----------
+
+Business Frog is trying to manage a large and complicated software project. Use the
+left and right arrow keys to guide his jumps through the Gantt chart.
+
+Blue tasks are normal platforms that he can bounce on. The black platforms are major tasks - jumping on one is
+a major boost forward! Hit the red critical path tasks in sequence to get a multiplier bonus
+at the end of the game...but if you miss one the count starts all over!
+
+As you get higher, apples (representing new requirements) will fly in from the sides and 
+try to knock you off schedule.
+
+Cake in the lunch room?
+All your engineers just left their desks and the time-to-complete gets longer (temporarily).
+Is that a good thing in this case?
+
+Jump through management hoops for more bonus points.
 
 
 Credits
 -------
 The original game was made by [Omar Goshen](https://github.com/ogoshen).
+
 [Pow Studio](http://powstudios.com/content/smoke-animation-pack-1) - for the smoke jump sprite.  
+
+
 
 Loading Spinner: (https://github.com/tobiasahlin/SpinKit)
 
