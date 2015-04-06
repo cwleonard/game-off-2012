@@ -1,11 +1,7 @@
 Business Frog Jumps to Conclusions
 ============
 
-![Title Screen](assets/images/ss-title.png)
-
-![Game Play](assets/images/ss-gameplay.png)
-
-![High Scores](assets/images/ss-highscores.png)
+![Business Frog Jumps to Conclusions](assets/images/ss-3.png)
 
 Join Business Frog from [Amphibian.com](http://amphibian.com) as he jumps through
 the dystopian world of software project management. 
