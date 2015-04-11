@@ -6,16 +6,18 @@ Business Frog Jumps to Conclusions
 Join Business Frog from [Amphibian.com](http://amphibian.com) as he jumps through
 the dystopian world of software project management. 
 
-About
------
-Fork of Octocat Jump (from the GitHub Game Off 2012), modified for the **GitHub Game Off 2015**.
+Play the latest version here: (http://caseyleonard.com/ggo15/)
 
-The game is written in JavaScript using the [Crafty](http://craftyjs.com) framework.
+## About the Game
+
+This web-based game is a fork of [Octocat Jump](https://github.com/ogoshen/game-off-2012)
+from the GitHub Game Off 2012, modified for the **GitHub Game Off 2015**.
+
+It is written in JavaScript using the [Crafty](http://craftyjs.com) framework.
 
 It also uses some [jQuery](http://jquery.com/).
 
-How To Play
------------
+## How To Play
 
 Business Frog is trying to manage a large and complicated software project. Use the
 left and right arrow keys to guide his jumps through the Gantt chart.
@@ -33,15 +35,11 @@ Is that a good thing in this case?
 
 Jump through management hoops for more bonus points.
 
+## Credits
 
-Credits
--------
 The original game was made by [Omar Goshen](https://github.com/ogoshen).
 
 The CSS Loading Spinner is from [SpinKit](https://github.com/tobiasahlin/SpinKit).
-
-
-## Game Assets
 
 ### Graphics
 
@@ -66,7 +64,7 @@ The following game sound effects are also licensed under [Creative Commons: By A
 
   * Apple Bonk Sound: (http://www.freesound.org/people/timgormly/sounds/170141/)
 
-The following game sound effects have been dedicated to the [public domain](http://creativecommons.org/publicdomain/zero/1.0/) by their authors.
+These game sound effects have been dedicated to the [public domain](http://creativecommons.org/publicdomain/zero/1.0/) by their authors.
 
   * Cake Sound: (http://www.freesound.org/people/plasterbrain/sounds/243020/)
 
@@ -74,4 +72,8 @@ The following game sound effects have been dedicated to the [public domain](http
 
   * Hoop Sound: (http://freesound.org/people/suntemple/sounds/253177/)
 
+## About Me
+
+This game fork was created by me, Casey Leonard. I make software for a living and I write a [web comic](http://amphibian.com) about
+frogs who run a technology company. For more information, see (http://caseyleonard.com).
 
