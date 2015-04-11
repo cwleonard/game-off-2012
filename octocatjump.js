@@ -576,33 +576,18 @@ function postScore(playerName, score) {
             			w: Crafty.viewport.width
             		}).replace('<div style="text-align: center; font: 48px Sniglet, Impact; color: #222; text-shadow: 0px 2px 4px rgba(0,0,0,.5);">Total = ' + total + '</div>');
             		
-            		
             		checkScore(total);
             		
-            		
-            		
-            		
                     var $tbl = $('<table><tr style="border-bottom: 2px solid black"><th>Name</th><th>Score</th></tr>');
-//                  for(var i=0; i<10; i++) {
-//                      // var $row = ('<tr><td>Name</td><td>' + (score + stars * 10) + '</td></tr>');
-//                      var $row = ('<tr><td>Name</td><td>Score</td></tr>');
-//                      $tbl.append($row);
-//                  }
-                  Crafty.e("HTML, ScoreBoard")
-                  .attr({x:20, y:300, w:Crafty.viewport.width - 40})
-                  .css({
-                      'color': '#000',
-                      'border': '2px solid #000',
-                      'borderRadius': '8px'
-                      // 'boxShadow': '0px 8px 8px rgba(0,0,0,.2)'
-                  })
-                  .append('<table id="scoreboard" cellspacing="0">' + $tbl.html() + '</table>');
-                  //console.log([$tbl, $tbl.html()]);
-            		
-            		
-            		
-            		
-            		
+
+                    Crafty.e("HTML, ScoreBoard")
+                    .attr({x:20, y:300, w:Crafty.viewport.width - 40})
+                    .css({
+                    	'color': '#000',
+                    	'border': '2px solid #000',
+                    	'borderRadius': '8px'
+                    })
+                    .append('<table id="scoreboard" cellspacing="0">' + $tbl.html() + '</table>');
             		
             		return;
             	}
@@ -640,12 +625,6 @@ function postScore(playerName, score) {
                 s += ~~ (s + (score - s) / score);
                 s = Math.min(s, score);
             });
-
-            
-    		
-
-//            populateHighScores();
-            
 
             var _scene = this;
             setTimeout(function () {
@@ -880,13 +859,17 @@ function postScore(playerName, score) {
 
             if(dy <= 0 || obj.alpha !== 1) return;
 
-            // if (-1 === c.normal.y) {
             if(-1 === c.normal.y) {
-
+            	
+            	octocat.image("assets/images/business_frog.png")
+            	.delay(function () {
+                    this.image("assets/images/frog_jumping.png")
+                }, 150);
+            	
 
                 Crafty.e("2D, DOM, SmokeJump, SpriteAnimation, Delay").origin('center').attr({
                     x: this.x + 16,
-                    y: this.y - 8,
+                    y: this.y + 30,
                     w: 64,
                     h: 64
                 }).reel("Smoke", 500, 0, 0, 10).animate('Smoke', 1).bind("AnimationEnd", this.destroy);
@@ -902,7 +885,6 @@ function postScore(playerName, score) {
 
                 if(dy > 0) {
 
-                    // this.stopFalling();
                     this.y += c.overlap * -c.normal.y;
 
                     this._speed.y = obj.has("Major") ? -this.PUSH_HEIGHT : -this.JUMP_HEIGHT;
@@ -1081,12 +1063,13 @@ function postScore(playerName, score) {
                 alpha: OVERLAY_ALPHA
             }).color(BG_COLOR);
 
-            var octocat = Crafty.e("2D, DOM, Player, Octocat, SpriteAnimation, Physics, PlayerControls, Collision, Tween, Delay").origin('center').setName("octocat").attr({
+            var octocat = Crafty.e("2D, DOM, Player, Octocat, Image, Physics, PlayerControls, Collision, Tween, Delay").origin('center').attr({
                 x: 160,
                 y: Crafty.canvas._canvas.height / 2 - 48,
-                z: 999
-            }).reel("walk", 500, 0, 0, 3).animate('walk', -1)
-            .collision(new Crafty.circle(48, 48, 32))
+                z: 999,
+                w: 92,
+                h: 75
+            }).image("assets/images/frog_jumping.png")
             .onHit("Coffee", onHitStar)
             .onHit("Cake", onHitCake)
             .onHit("Apple", onHitApple)
@@ -1252,7 +1235,6 @@ function postScore(playerName, score) {
                     if(isDead) {
                         Crafty.audio.play('dead', 1, 0.2);
                         Crafty.unbind("EnterFrame", scrollViewport);
-                        //Crafty.unbind("EnterFrame", throwApples);
                         this.unbind('EnterFrame', updateOctocat);
                         setTimeout(function () {
                             Crafty.scene('dead');
@@ -1390,9 +1372,9 @@ function postScore(playerName, score) {
                 $("#loader").remove();
                 $("#cr-stage").show();
 
-                Crafty.sprite(96, "assets/images/business_frog.png", {
-                    Octocat: [0, 0]
-                });
+//                Crafty.sprite(96, "assets/images/business_frog.png", {
+//                    Octocat: [0, 0]
+//                });
 
                 Crafty.sprite(64, "assets/images/smoke_jump.png", {
                     SmokeJump: [0, 0]
