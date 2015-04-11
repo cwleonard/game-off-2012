@@ -34,7 +34,7 @@
     #cr-stage {
       display: none;
       border:1px solid #999; 
-      margin:50px auto; 
+      margin:25px auto; 
       color:white; 
       -webkit-box-shadow: 0px 0px 32px 0px rgba(0, 0, 0, .5);
       box-shadow: 0px 0px 32px 0px rgba(0, 0, 0, .5);
@@ -43,7 +43,7 @@
       width: 400px;
       height: 640px;
       border:1px solid #999; 
-      margin:50px auto; 
+      margin:25px auto; 
       background-color:white; 
       -webkit-box-shadow: 0px 0px 32px 0px rgba(0, 0, 0, .5);
       box-shadow: 0px 0px 32px 0px rgba(0, 0, 0, .5);
@@ -135,6 +135,17 @@
   }
 }    
     
+#footer p {
+	
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12pt;
+	text-align: center;
+	
+}
+
+#footer a {
+	color: #000000;
+}
     
     
     
@@ -150,6 +161,11 @@
   		<div class="rect5"></div>
 	</div>
 	<p>Loading...</p>
+  </div>
+  <div style="display: none" id="cr-stage"></div>
+  <div id="footer">
+	<p id="github"><a href="https://github.com/cwleonard/game-off-2015">View the source code for this game on GitHub!</a></p>
+	<p id="license"><a href="license.txt">License and Attribution</a></p>
   </div>
   <script type="text/javascript" src="jquery-1.11.2.min.js"></script>
   <script type="text/javascript" src="crafty.js"></script>

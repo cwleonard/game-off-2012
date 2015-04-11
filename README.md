@@ -38,20 +38,40 @@ Credits
 -------
 The original game was made by [Omar Goshen](https://github.com/ogoshen).
 
-[Pow Studio](http://powstudios.com/content/smoke-animation-pack-1) - for the smoke jump sprite.  
+The CSS Loading Spinner is from [SpinKit](https://github.com/tobiasahlin/SpinKit).
 
 
+## Game Assets
 
-Loading Spinner: (https://github.com/tobiasahlin/SpinKit)
+### Graphics
 
-Coffe Cup Image: (https://openclipart.org/detail/193527/coffee-cup)
+The mute/speaker icons, portal, and smoke jump graphics are unmodified from the original game.
+[Pow Studios](http://powstudios.com/content/smoke-animation-pack-1) is credited for the smoke jump sprite.
 
-Coffee Sound: (http://www.freesound.org/people/Cabeeno%20Rossley/sounds/126412/)
+The Coffee Cup image is derived from "Coffee Cup" by
+[barrettward](https://openclipart.org/user-detail/barrettward) and can be foound
+at (https://openclipart.org/detail/193527/coffee-cup).
 
-Apple Bonk Sound: (http://www.freesound.org/people/timgormly/sounds/170141/)
+I created the apple and cake images myself and submitted them to the public domain. You can download
+them and other free graphics in SVG format from [OpenClipart](https://openclipart.org/user-detail/cwleonard).
 
-Cake Sound: (http://www.freesound.org/people/plasterbrain/sounds/243020/)
+The Business Frog images are from my webcomic [Amphibian.com](http://amphibian.com). Please don't
+use them without my permission.
 
-Spin Sound: (http://freesound.org/people/jhka/sounds/139001/)
+### Sound Effects
 
-Hoop Sound: (http://freesound.org/people/suntemple/sounds/253177/)
+The following game sound effects are also licensed under [Creative Commons: By Attribution 3.0](http://creativecommons.org/licenses/by/3.0/).
+
+  * Coffee Sound: (http://www.freesound.org/people/Cabeeno%20Rossley/sounds/126412/)
+
+  * Apple Bonk Sound: (http://www.freesound.org/people/timgormly/sounds/170141/)
+
+The following game sound effects have been dedicated to the [public domain](http://creativecommons.org/publicdomain/zero/1.0/) by their authors.
+
+  * Cake Sound: (http://www.freesound.org/people/plasterbrain/sounds/243020/)
+
+  * Spinning Sound: (http://freesound.org/people/jhka/sounds/139001/)
+
+  * Hoop Sound: (http://freesound.org/people/suntemple/sounds/253177/)
+
+
