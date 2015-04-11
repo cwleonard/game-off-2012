@@ -6,7 +6,7 @@ Business Frog Jumps to Conclusions
 Join Business Frog from [Amphibian.com](http://amphibian.com) as he jumps through
 the dystopian world of software project management. 
 
-Play the latest version here: (http://caseyleonard.com/ggo15/)
+Play the latest version here: http://caseyleonard.com/ggo15/
 
 ## About the Game
 
@@ -47,8 +47,8 @@ The mute/speaker icons, portal, and smoke jump graphics are unmodified from the 
 [Pow Studios](http://powstudios.com/content/smoke-animation-pack-1) is credited for the smoke jump sprite.
 
 The Coffee Cup image is derived from "Coffee Cup" by
-[barrettward](https://openclipart.org/user-detail/barrettward) and can be foound
-at (https://openclipart.org/detail/193527/coffee-cup).
+[barrettward](https://openclipart.org/user-detail/barrettward) and can be found
+at https://openclipart.org/detail/193527/coffee-cup
 
 I created the apple and cake images myself and submitted them to the public domain. You can download
 them and other free graphics in SVG format from [OpenClipart](https://openclipart.org/user-detail/cwleonard).
@@ -75,5 +75,5 @@ These game sound effects have been dedicated to the [public domain](http://creat
 ## About Me
 
 This game fork was created by me, Casey Leonard. I make software for a living and I write a [web comic](http://amphibian.com) about
-frogs who run a technology company. For more information, see (http://caseyleonard.com).
+frogs who run a technology company. For more information, see [my web site](http://caseyleonard.com).
 
