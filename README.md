@@ -26,6 +26,8 @@ Blue tasks are normal platforms that he can bounce on. The black platforms are m
 a major boost forward! Hit the red critical path tasks in sequence to get a multiplier bonus
 at the end of the game...but if you miss one the count starts all over!
 
+Hit the briefcases to warp ahead.
+
 As you get higher, apples (representing new requirements) will fly in from the sides and 
 try to knock you off schedule.
 
