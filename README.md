@@ -13,9 +13,22 @@ Play the latest version here: http://caseyleonard.com/ggo15/
 This web-based game is a fork of [Octocat Jump](https://github.com/ogoshen/game-off-2012)
 from the GitHub Game Off 2012, modified for the **GitHub Game Off 2015**.
 
-It is written in JavaScript using the [Crafty](http://craftyjs.com) framework.
+The game is written in JavaScript using the [Crafty](http://craftyjs.com) framework.
 
 It also uses some [jQuery](http://jquery.com/).
+
+Modifications from the original game:
+
+  * Changed the game from Octocat jumping on generic platforms to Business Frog jumping through a giant Gantt chart
+  * Added a cake power-up that extends platforms
+  * Added hoops to jump through for bonus points
+  * Added apples that try to knock you down
+  * Added the critical path bonus multiplier
+  * Upgraded to the latest versions of Crafty and jQuery
+  * Fixed some bugs
+  * Added ability to restart the game after you fall
+  * Added a high score system
+  * Changed some of the sound effects
 
 ## How To Play
 
