@@ -13,7 +13,11 @@ function saveHighScore(data) {
 	
 	if (data.shouldPrompt) {
 		var playerName = prompt("Please enter your name");
-		postScore(playerName, data.score);
+		if (playerName != null && playerName.length > 0) {
+			postScore(playerName, data.score);
+		} else {
+			populateHighScores();
+		}
 	} else {
 		populateHighScores();
 	}
