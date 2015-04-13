@@ -1,6 +1,7 @@
 var express = require('express');
 var fs = require('fs');
 var http = require('http');
+var escape = require('escape-html');
 
 var app = express();
 
@@ -52,8 +53,8 @@ app.get('/checkScore/:s', function(req, res, next) {
 app.get('/score/:n/:s', function(req, res, next) {
 
 	var scoreObj = {
-			"name": req.params.n,
-			"score": req.params.s
+			"name": escape(req.params.n),
+			"score": escape(req.params.s)
 	}
 	scores.push(scoreObj);
 	
