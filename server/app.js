@@ -53,7 +53,7 @@ app.get('/checkScore/:s', function(req, res, next) {
 app.get('/score/:n/:s', function(req, res, next) {
 
 	var scoreObj = {
-			"name": escape(req.params.n),
+			"name": escape(req.params.n).substring(0, 16),
 			"score": escape(req.params.s)
 	}
 	scores.push(scoreObj);
