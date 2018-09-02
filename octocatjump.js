@@ -28,7 +28,7 @@ function checkScore(score) {
 	
 	$.ajax({
 		type: 'GET',
-		url: "http://caseyleonard.com:1337/checkScore/" + score,
+		url: "https://caseyleonard.com:1337/checkScore/" + score,
 		jsonpCallback: 'saveHighScore',
 		dataType: 'jsonp',
 		success: function(json) {
@@ -58,7 +58,7 @@ function populateHighScores() {
 
 	$.ajax({
 		type: 'GET',
-		url: "http://caseyleonard.com:1337/scores",
+		url: "https://caseyleonard.com:1337/scores",
 		jsonpCallback: 'processHighScores',
 		contentType: "application/json",
 		dataType: 'jsonp',
@@ -79,7 +79,7 @@ function postScore(playerName, score) {
 	
 	$.ajax({
 		type: 'GET',
-		url: "http://caseyleonard.com:1337/score/" + playerName + "/" + score,
+		url: "https://caseyleonard.com:1337/score/" + playerName + "/" + score,
 		jsonpCallback: 'scorePosted',
 		dataType: 'jsonp',
 		success: function(json) {

@@ -99,6 +99,6 @@ setTimeout(saveHighScores, 300000);
 
 // ------------------------- start the listening
 
-var server = app.listen(1337, function() {
+var server = app.listen(2000, function() {
 	console.log('listening on port %d', server.address().port);
 });
